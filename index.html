@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script async src="./lib/require.js" data-main="./js/requireConfig.js"></script>
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+</head>
+<body data-bind="with: ROOT() ">
+
+<div data-bind="template: { name: 'ko-component-catalog-of-library', data: $root }"></div>
+
+<script id="ko-component-catalog-of-library" type="text/html">
+
+    <!-- ko with: virtualFileSystemModel() -->
+    <div class="library_list margin_top_20px deleted_item">
+
+        <button data-bind="click: onClickCreateNewFolder" type="button" data-title="Создать папку" class="btn btns_blue image_button delay">
+            Создать папку
+            <span class="inside_button_image folder_format"></span>
+        </button>
+
+
+    </div>
+    <!-- /ko -->
+
+
+    <!-- ko with: virtualFileSystemModel() -->
+    <ul class="main_file_list">
+        <!-- ko with: directoryTreeModel() -->
+
+        <!-- ko template: { name: 'folder_item_template', data: rootFolder() } -->
+        <!-- /ko -->
+
+        <!-- /ko -->
+    </ul>
+    <!-- /ko -->
+
+</script>
+
+<script id="folder_item_template" type="text/html" >
+    <li data-bind="css: {  'drag_taken' : isTaken, 'drag_moving' : isMoving, 'drag_moved' : isMoved }">
+        <div draggable="true" class="library_list" data-bind="
+        event: { dragover: ondragover, dragleave: ondragleave, dragenter: ondragenter, drop: ondrop, dragstart: ondragstart, dragend: ondragend, click: onToggleSelectStateClick },
+        css: { 'drag_taking': isTaking, 'no_drop': !mayTake(), 'selected' : isSelected(), 'drag_failed' : isFailed() }">
+            <div class="check_selector">
+                <!-- ko if: !isRoot() -->
+                <input id="file_01" class="none" type="checkbox" value="1" data-bind="attr: { id : 'file_' + $data.id(), value: id}, checked: isSelected ">
+                <!--<label for="file_01" class="checkbox_style no_text mid_align" data-bind="attr: { for : 'file_' + $data.id() }, click: onToggleSelectStateClick "></label>-->
+                <!-- /ko -->
+
+                <!-- ko if: files() && files().isFetching() -->
+                <div class="preloader" style="margin: 0">
+                    <span class="preloader_core"></span>
+                </div>
+                <!-- /ko -->
+
+            </div>
+            <div class="folder_file_item">
+                <div class="big_icon_point closed_folder_ico" data-bind="click: $data.toggleIsOpenedState, css: isOpened() ? 'open_folder_ico' : 'closed_folder_ico' "></div>
+            </div>
+
+
+            <div class="file_informations">
+                <a class="folder_name" href="#" data-bind="text: $data.title()">Название папки</a>
+            </div>
+
+
+        </div>
+        <div class="contents_of_folder" data-bind="css: { 'folder_is_open': isOpened() }">
+            <!-- ko if: isEmpty() -->
+            <p class="empty_fuild">Тут пусто</p>
+            <!-- /ko -->
+
+            <!-- ko if: !isEmpty() -->
+            <ul class="inside_folder_ul" >
+
+                <!-- ko if: files -->
+
+                <!-- ko foreach: childrens -->
+                <!-- ko template: { name: 'folder_item_template', data: $data } -->
+                <!-- /ko -->
+                <!-- /ko -->
+
+                <!-- ko with: files -->
+                <!-- ko foreach: models -->
+                <li data-bind="css: { 'drag_moved' : isMoved }">
+
+                    <div class="library_list" draggable="true" data-bind="
+                        event: { dragstart: ondragstart, dragend: ondragend },
+                        css: { 'drag_moving' : isMoving, 'selected' : isSelected },
+                        click: onToggleSelectStateClick ">
+
+                        <div class="check_selector inside">
+                            <input id="" class="none" type="checkbox" value="1" data-bind="attr: { id : 'file_' + $data.id(), value: id}, checked: isSelected ">
+                            <label for="" class="checkbox_style no_text mid_align" data-bind="attr: { for : 'file_' + $data.id() }"></label>
+                        </div>
+
+                        <div class="folder_file_list">
+                            <!-- ko template: { name: 'file_item_template', data: $data }--><!-- /ko -->
+                        </div>
+
+                    </div>
+
+                </li>
+                <!-- /ko -->
+                <!-- /ko -->
+                <!-- /ko -->
+            </ul>
+            <!-- /ko -->
+        </div>
+    </li>
+</script>
+
+<script id="file_item_template" type="text/html">
+    <div class="library_list">
+        <div class="info_point static_format float_left" >
+            <span class="inside_image" data-bind="css: getDocTypeClass(), click: onClickOpenPreview"></span>
+        </div>
+        <div class="file_information">
+            <a class="file_name" href="javascript: void 0" data-bind="text: title, click: onClickOpenPreview">{{title}}</a>
+            <p data-bind="text: title">{{title}}</p>
+        </div>
+    </div>
+</script>
+</body>
+</html>

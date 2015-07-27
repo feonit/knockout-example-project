@@ -1,0 +1,298 @@
+* {
+    font-family: fantasy;
+}
+
+ul{
+    list-style: none;
+}
+
+.library_list {
+    padding:21px 0;
+    position:relative;
+    cursor:pointer;
+    display: table;
+    width: 100%;
+}
+
+.check_selector {
+    display: table-cell;
+    vertical-align: middle;
+    width: 50px;
+}
+
+.folder_file_item{
+    display: table-cell;
+    vertical-align: middle;
+    width: 100px;
+    cursor: pointer;
+}
+
+.file_informations {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:left;
+    white-space: nowrap;
+}
+.file_informations span {font-size:12px; word-wrap: break-word;}
+.file_informations a {width:auto;}
+
+
+
+.info_point {
+    width:32px;
+    height:38px;
+    background-position:center center;
+    background-repeat:no-repeat;
+    display:inline-block;
+    vertical-align:top;
+    text-decoration:none;
+    border-radius:3px;
+    position:relative;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+}
+
+.float_left {float:left;}
+
+
+.inside_image {
+    position:absolute;
+    width:26px;
+    height:26px;
+    overflow:hidden;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    background-repeat:no-repeat;
+    background-image:url('/images/main_sprite_image.png');
+}
+
+.file_name {
+    display:block;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:14px;
+    line-height:14px;
+    padding:1px 0 3px 0;
+    margin-right:250px;
+}
+
+
+
+.checkbox_style {
+    height:20px;
+    display:inline-block;
+    padding:4px 0 0 36px;
+    vertical-align:middle;
+    position:relative;
+    cursor:pointer;
+} .checkbox_style.no_text {
+      padding:4px 0 0 24px;
+  }
+
+  .open_folder_ico{
+      width: 50px;
+      height: 50px;
+      background-color: red;
+      background: url(./image/opened.jpg);
+      background-size: 100%;
+  }
+
+  .closed_folder_ico{
+      width: 50px;
+      height: 50px;
+      background: url(./image/closed.jpg);
+      background-size: 100%;
+  }
+
+@-webkit-keyframes taken_elem {
+    from { background-color: rgb(193, 226, 255)} to { background-color: inherit; }
+}
+@-moz-keyframes taken_elem {
+    from { background-color: rgb(193, 226, 255)} to { background-color: inherit; }
+}
+@-o-keyframes taken_elem {
+    from { background-color: rgb(193, 226, 255)} to { background-color: inherit; }
+}
+@keyframes taken_elem {
+    from { background-color: rgb(193, 226, 255)} to { background-color: inherit; }
+}
+
+@-webkit-keyframes moved_elem {
+    from { background-color: lightseagreen; }
+    to {
+        background-color: inherit;
+    }
+}
+@-moz-keyframes moved_elem {
+    from { background-color: lightseagreen; }
+    to {
+        background-color: inherit;
+    }
+}
+@-o-keyframes moved_elem {
+    from { background-color: lightseagreen; }
+    to {
+        background-color: inherit;
+    }
+}
+@keyframes moved_elem {
+    from { background-color: lightseagreen; }
+    to {
+        background-color: inherit;
+    }
+}
+
+@-webkit-keyframes fail_elem {
+    from { background-color: rgb(255, 217, 217); }
+    to {
+        background-color: inherit;
+        height: 0;
+    }
+}
+@-moz-keyframes fail_elem {
+    from { background-color: rgb(255, 217, 217); }
+    to {
+        background-color: inherit;
+        height: 0;
+    }
+}
+@-o-keyframes fail_elem {
+    from { background-color: rgb(255, 217, 217); }
+    to {
+        background-color: inherit;
+        height: 0;
+    }
+}
+@keyframes fail_elem {
+    from { background-color: rgb(255, 217, 217); }
+    to {
+        background-color: inherit;
+    }
+}
+
+.library_list{
+
+    -webkit-transition: -webkit-transform 0.2s ease-out;
+    -moz-transition: -moz-transform 0.2s ease-out;
+    -o-transition: -o-transform 0.2s ease-out;
+    -ms-transition: -ms-transform 0.2s ease-out;
+}
+.drag_taking{
+    background: aliceblue;
+
+    /*-webkit-transform: scale(1.05);*/
+    /*-moz-transform: scale(1.05);*/
+    /*-ms-transform: scale(1.05);*/
+    /*-o-transform: scale(1.05);*/
+}
+
+
+.drag_moving{
+    opacity: .5;
+    /*-webkit-transform: scale(0.8);*/
+    /*-moz-transform: scale(0.8);*/
+    /*-ms-transform: scale(0.8);*/
+    /*-o-transform: scale(0.8);*/
+}
+.drag_taken {
+    -webkit-animation: taken_elem 1s ease-in;
+    -moz-animation: taken_elem 1s ease-in;
+    -o-animation: taken_elem 1s ease-in;
+    animation: taken_elem 1s ease-in;
+}
+.drag_moved{
+
+    -webkit-transition: 1s ease-out;
+    -moz-transition: 1s ease-out;
+    -o-transition: 1s ease-out;
+    transition: 1s ease-out;
+
+    -webkit-animation: moved_elem 1s ease-in;
+    -moz-animation: moved_elem 1s ease-in;
+    -o-animation: moved_elem 1s ease-in;
+    animation: moved_elem 1s ease-in;
+}
+.drag_failed{
+    -webkit-animation: fail_elem 1s ease-in;
+    -moz-animation: fail_elem 1s ease-in;
+    -o-animation: fail_elem 1s ease-in;
+    animation: fail_elem 1s ease-in;
+}
+
+.drag_failed:after {
+    content: 'Нельзя перекинуть папку саму в себя';
+    color: red;
+    opacity: .7;
+}
+
+[draggable] {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
+}
+
+
+.library_list:hover {
+    background: aliceblue;
+}
+
+
+.library_list .preloader{
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto !important;
+    background: inherit;
+}
+
+.empty_fuild{
+    color: rgb(120, 170, 228);
+    text-decoration: underline;
+    text-align: center;
+}
+
+.contents_of_folder{
+    opacity: 0;
+    max-height: 0px;
+    overflow-y: hidden;
+
+    -moz-transition:max-height 0.2s, opacity 0.4s linear;
+    -ms-transition:max-height 0.2s, opacity 0.4s linear;
+    -o-transition:max-height 0.2s, opacity 0.4s linear;
+    -webkit-transition:max-height 0.2s, opacity 0.4s linear;
+    transition:max-height 0.2s, opacity 0.4s linear;
+}
+
+.contents_of_folder.folder_is_open{
+    max-height:3000px;
+    -moz-transition: max-height 2s, opacity 0.4s linear;
+    -ms-transition: max-height 2s, opacity 0.4s linear;
+    -o-transition: max-height 2s, opacity 0.4s linear;
+    -webkit-transition: max-height 2s, opacity 0.4s linear;
+    transition: max-height 2s, opacity 0.4s linear;
+
+    opacity: 1;
+
+}
+
+.drag_taking:hover{
+    cursor: copy !important;
+}
+
+.library_list.selected{
+    cursor: move;
+}
+
+
+
+/** чтобы подцвечивать родительскую папку  */
+.selected + .folder_is_open{
+    opacity: 0.5;
+}
