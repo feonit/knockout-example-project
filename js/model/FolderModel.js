@@ -1,4 +1,4 @@
-define(['_', 'Model'], function(_, Model){
+define(['_', 'Model', 'FilesCollection'], function(_, Model, FilesCollection){
 
     "use strict";
 

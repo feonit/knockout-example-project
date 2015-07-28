@@ -11,14 +11,16 @@ require.config({
 		/**
 		 * infrastructure
 		 * */
-		knockout: '../lib/knockout',
-		jquery: '../lib/jquery',
-		'knockout.mapping': '../lib/knockout.mapping',
+		knockout: 							'../lib/knockout',
+		jquery: 							'../lib/jquery',
+		'knockout.mapping': 				'../lib/knockout.mapping',
+
 		/**
 		 * core
 		 * */
-		_: '../js/core/_',
-		Model: 						'core/Model',
+		_: 									'core/_',
+		Application: 						'core/Application',
+		Model: 								'core/Model',
 
 		/**
 		 * package for catalog
@@ -46,24 +48,9 @@ require.config({
 });
 
 
-require(['infrastructure'], function(){
+require(['Application'], function(Application){
 
-	require(['knockout', 'jquery', 'VirtualFileSystemModel'], function(ko, $, VirtualFileSystemModel){
+	var app = new Application();
 
-		$(function(){
-
-			window.ROOT = ko.observable({
-				virtualFileSystemModel : ko.observable(new VirtualFileSystemModel())
-			});
-
-			window.ROOT().virtualFileSystemModel().directoryTreeModel().fetch();
-			window.ROOT().virtualFileSystemModel().directoryTreeModel().rootFolder().open();
-
-
-			ko.applyBindings(window.ROOT);
-
-		});
-
-	});
-
+	app.start();
 });
