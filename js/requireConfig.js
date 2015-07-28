@@ -32,6 +32,7 @@ require.config({
 		FilesCollection: 					'collection/FilesCollection',
 		ItemCatalogViewModel: 				'viewModel/mixin/ItemCatalogViewModel',
 		FileModel: 							'model/FileModel',
+		FolderModel: 						'model/FolderModel',
 		FileViewModel: 						'viewModel/FileViewModel',
 
 	},

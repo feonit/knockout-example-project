@@ -2,7 +2,10 @@
  * Created by Feonit on 13.07.15.
  */
 
-define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogViewModel'], function(_, ko, DragAndDropModel, FilesCollection, ItemCatalogViewModel){
+define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogViewModel', 'FolderModel'], function(
+    _, ko, DragAndDropModel, FilesCollection, ItemCatalogViewModel, FolderModel){
+
+
 
     /**
      * @constructor FileTreeViewModel
@@ -10,26 +13,34 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
      * @mixes DragAndDropModel
      * @mixes ItemCatalogViewModel
      * */
-    var FolderTreeViewModel = _.defineSubclass(DragAndDropModel, function FolderTreeViewModel(options){
+    var FolderTreeViewModel = _.defineSubclass(FolderModel, function FolderTreeViewModel(options){
 
-            DragAndDropModel.apply(this, arguments);
-            ItemCatalogViewModel.apply(this, arguments);
+            FolderModel.call(this, options.data);
+            DragAndDropModel.apply(this);
+            ItemCatalogViewModel.apply(this);
 
-            options = options || {};
-            options.data = options.data || {};
-
-            this.id = ko.observable(options.data.id);
-            this.ownerName = ko.observable(options.data.ownerName);
-            this.title = ko.observable(options.data.title);
-            this.secureLevel = ko.observable('PUBLIC');
-
-
-            this.files = ko.observable(new FilesCollection({ parent : this }));
-            this.parent = ko.observable(options.data.parent);
-            this.parent_id = ko.observable(options.data.parent_id);
-            this.childrens = ko.observableArray([]);
             this.isOpened = ko.observable(false);
+            this.renamed = ko.observable(false);
+            this.isEmpty = ko.computed(function(){
+                return !this.getTotalItemsCount()
+            }, this);
+            this.isSelected.subscribe(function(boolean){
 
+                function reqursive(folder){
+                    folder.files().models().forEach(function(item){
+                        item.containsInSelectedFolder(boolean);
+                    }, this);
+
+                    folder.childrens().forEach(function(item){
+                        item.containsInSelectedFolder(boolean);
+                        reqursive(item);
+                    }, this);
+                }
+
+                reqursive(this)
+
+            }, this);
+            this.parent = ko.observable(options.data.parent);
             this.nestingLevel = ko.computed(function(){
                 var level = 1;
 
@@ -47,36 +58,12 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
                 return level;
 
             }, this);
-
-            this.renamed = ko.observable(false);
-
             this.isRoot = ko.observable(this.nestingLevel() === 1);
 
             if (!this.isRoot()){
                 /** that param from {DragAndDrop} */
                 this.isSelected(this.parent().isSelected());
             }
-
-            this.isEmpty = ko.computed(function(){
-                return !this.getTotalItemsCount()
-            }, this);
-
-            this.isSelected.subscribe(function(boolean){
-
-                function reqursive(folder){
-                    folder.files().models().forEach(function(item){
-                        item.containsInSelectedFolder(boolean);
-                    }, this);
-
-                    folder.childrens().forEach(function(item){
-                        item.containsInSelectedFolder(boolean);
-                        reqursive(item);
-                    }, this);
-                }
-
-                reqursive(this)
-
-            }, this);
         },
 
         // Instance methods: copied to prototype
@@ -168,35 +155,6 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
 
             close : function(){
                 this.isOpened(false);
-            },
-
-            //url : function(){
-            //    return 'api/folder/' + this.id()
-            //},
-
-            //folderCreate : function(){
-            //
-            //},
-
-            //folderRead : function(){
-            //    if (!this.fetched()){
-            //        this.fetch();
-            //    }
-            //},
-
-            //folderUpdate : function(){
-            //    this.save();
-            //},
-
-            //folderDelete : function(){
-            //
-            //},
-
-            //parse : function(response){
-            //
-            //},
-            save : function(){
-
             }
         }
     );

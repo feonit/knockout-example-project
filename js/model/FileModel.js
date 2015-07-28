@@ -14,5 +14,7 @@ define(['_', 'Model', 'knockout'], function(_, Model, ko){
 
 		Model.apply(this, arguments); // after defined attributes
 
+	} , {
+		// Instance methods: copied to prototype
 	});
 });

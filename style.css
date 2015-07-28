@@ -7,7 +7,6 @@ ul{
 }
 
 .library_list {
-    padding:21px 0;
     position:relative;
     cursor:pointer;
     display: table;
