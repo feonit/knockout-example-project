@@ -1,7 +1,7 @@
 /**
  * Created by Feonit on 13.07.15.
  */
-define(['knockout'], function(ko){
+define(['knockout', '_', 'Model'], function(ko, _, Model){
 
     var directoryTreeData = {
         id: 1,
@@ -48,78 +48,97 @@ define(['knockout'], function(ko){
         parent: null
     };
 
-    /**
-     * @class DirectoryTree
-     * */
-    function DirectoryTreeModel(){
-        var MAX_LEVEL_NESTING = 3;
+    var DirectoryTreeModel = _.defineSubclass(Model,
+        /**
+         * A constructor for Directory Tree view
+         * @constructs DirectoryTreeModel
+         * @extends Model
+         * */
+        function DirectoryTreeModel(){
+            /**
+             * @const
+             * @private
+             * */
+            var MAX_LEVEL_NESTING = 3;
 
-        this.rootFolder = ko.observable();
-    }
+            /**
+             * @param {Function} root folder
+             * @public
+             * */
+            this.rootFolder = ko.observable();
+        },
+        /** @lends DirectoryTreeModel.prototype */
+        {
+            /**
+             * Method for load data
+             * @public
+             * */
+            fetch : function(){
+                this.parse(directoryTreeData);
+            },
+            /**
+             * Method for parse data and create the tree
+             * @param {Object} directoryTreeData
+             * @public
+             * */
+            parse : function(directoryTreeData){
+                var rootFolder = DirectoryTreeModel._createRootFolder(directoryTreeData);
 
-    /**
-     * @public method
-     * */
-    DirectoryTreeModel.prototype.fetch = function(){
-        this.parse(directoryTreeData);
-    };
+                this.rootFolder( rootFolder );
+            }
+        },
+        /** @lends DirectoryTreeModel */
+        {
+            /**
+             * Method for create root folder
+             * @param {Object} folderRootData
+             * @private
+             * */
+            _createRootFolder : function(folderRootData){
+                folderRootData.id = 1;
+                folderRootData.title = 'Root';
+                folderRootData.parent = null;
 
-    /**
-     * @public method
-     * */
-    DirectoryTreeModel.prototype.parse = function(directoryTreeData){
-        // todo перенести в прослойку ajax отсюда
-        //if (!response || !response.result || !response.result.data || !Array.isArray(response.result.data)) { return false; throw Error('not found data at response') }
+                var rootFolder = API_VirtualFileSystem.createFolder({
+                    data : folderRootData
+                });
 
-        var rootFolder = DirectoryTreeModel._createRootFolder(directoryTreeData);
+                DirectoryTreeModel._createFoldersReqursive(rootFolder, folderRootData);
 
-        this.rootFolder( rootFolder );
-    };
+                return rootFolder;
+            },
+            /**
+             * Method for generate the folders of tree based on the received data
+             * @param {FolderTreeViewModel} parentFolder
+             * @param {Object} parentFolderData
+             * @private
+             * @return {FolderTreeViewModel}
+             * */
+            _createFoldersReqursive : function (parentFolder, parentFolderData){
 
-    /**
-     * @privat method
-     * */
-    DirectoryTreeModel._createRootFolder = function(folderRootData){
-        folderRootData.id = 1;
-        folderRootData.title = 'Root';
-        folderRootData.parent = null;
+                if (parentFolderData.childrens.length === 0) return parentFolder;
 
-        var rootFolder = API_VirtualFileSystem.createFolder({
-            data : folderRootData
-        });
+                var collectionChildrens = parentFolderData.childrens.map(function(data){
 
-        DirectoryTreeModel._createFoldersReqursive(rootFolder, folderRootData);
+                    var childFolder = API_VirtualFileSystem.createFolder({
+                        data : {
+                            id : data.id,
+                            title : data.title,
+                            parent: parentFolder,
+                            parent_id: parentFolderData.id
+                        }
+                    });
 
-        return rootFolder;
-    };
+                    DirectoryTreeModel._createFoldersReqursive(childFolder, data);
 
-    /**
-     * @privat method
-     * */
-    DirectoryTreeModel._createFoldersReqursive = function (parentFolder, parentFolderData){
+                    return childFolder;
+                }, this);
 
-        if (parentFolderData.childrens.length === 0) return parentFolder;
+                parentFolder.childrens(collectionChildrens);
 
-        var collectionChildrens = parentFolderData.childrens.map(function(data){
-
-            var childFolder = API_VirtualFileSystem.createFolder({
-                data : {
-                    id : data.id,
-                    title : data.title,
-                    parent: parentFolder,
-                    parent_id: parentFolderData.id
-                }
-            });
-
-            DirectoryTreeModel._createFoldersReqursive(childFolder, data);
-
-            return childFolder;
-        }, this);
-
-        parentFolder.childrens(collectionChildrens);
-
-        return parentFolder;
-    };
-
+                return parentFolder;
+            }
+        }
+    );
     return DirectoryTreeModel;
 });

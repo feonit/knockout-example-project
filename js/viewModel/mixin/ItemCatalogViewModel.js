@@ -3,9 +3,11 @@
  */
 define(['knockout'], function(ko){
 
+    "use strict";
+
     /**
      * This provides methods used for event handling.
-     *
+     * @constructor ItemCatalogViewModel
      * @mixin
      * */
     function ItemCatalogViewModel(){
@@ -25,11 +27,11 @@ define(['knockout'], function(ko){
     }
 
     ItemCatalogViewModel.prototype = {
+        /** @lends ItemCatalogViewModel.prototype */
 
         constructor: ItemCatalogViewModel,
 
         /**
-         * @public method
          * */
         getAccessClass : function () {
             switch (this.secureLevel()) {

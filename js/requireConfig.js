@@ -50,7 +50,10 @@ require.config({
 
 require(['Application'], function(Application){
 
-	var app = new Application();
+	/**
+	 * @global
+	 */
+	var app = window.app = new Application();
 
 	app.start();
 });

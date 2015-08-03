@@ -1,36 +1,66 @@
+/**
+ * @module Application
+ * @requires infrastructure
+ * */
 define(['infrastructure'], function(){
 
-    return new function ApplicationSingleton(window, document, $, ko){
+    var Application = (function(window, document, $, ko){
 
-        var instanse = this;
+        /**
+         * A constructor for Application
+         * @class Application
+         * @constructs Application
+         * @param {Object} options - The options for an instance
+         * @return {Application}
+         * */
+        function Application(options){
+            options = options || {};
 
-        this.version = '1.0.0';
+            /** @param */
+            this.version = '1.0.0';
+        }
 
-        this.constructor.prototype.start = function(){
+        Application.prototype = {
+            /** @lends Application.prototype */
 
-            require(['VirtualFileSystemModel'], function(VirtualFileSystemModel){
+            constructor: Application,
 
-                $(document).ready(function(){
+            /**
+             * Method for start the application
+             * @public
+             * */
+            start : function(){
 
-                    window.ROOT = ko.observable({
-                        virtualFileSystemModel : ko.observable(new VirtualFileSystemModel())
+                require(['VirtualFileSystemModel'], function(VirtualFileSystemModel){
+
+                    $(document).ready(function(){
+
+                        window.ROOT = ko.observable({
+                            virtualFileSystemModel : ko.observable(new VirtualFileSystemModel())
+                        });
+
+                        window.ROOT().virtualFileSystemModel().directoryTreeModel().fetch();
+                        window.ROOT().virtualFileSystemModel().directoryTreeModel().rootFolder().open();
+
+                        ko.applyBindings(window.ROOT);
+
                     });
 
-                    window.ROOT().virtualFileSystemModel().directoryTreeModel().fetch();
-                    window.ROOT().virtualFileSystemModel().directoryTreeModel().rootFolder().open();
-
-                    ko.applyBindings(window.ROOT);
-
                 });
+            },
 
-            });
+            /**
+             * Method for stop the application
+             * @public
+             * */
+            stop : function(){
+
+            }
         };
 
-        this.constructor.prototype.stop = function(){
+        return Application;
 
-        };
+    }(window, document, $, ko));
 
-        return function Application(){ return instanse }
-
-    }(window, document, $, ko);
+    return Application;
 });

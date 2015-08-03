@@ -2,19 +2,25 @@ define(['_', 'Model', 'knockout'], function(_, Model, ko){
 
 	"use strict";
 
-	/**
-	 * @constructor FileModel
-	 * */
-	return _.defineSubclass(Model, function FileModel( data ) {
+	var FileModel = _.defineSubclass(Model,
+		/**
+		 * Represents a file
+		 * @constructor FileModel
+		 * @extends Model
+		 * @param {object} attributes - The data of the file
+		 * */
+		function FileModel( attributes ) {
+			this.id = ko.observable();
+			this.ownerName = ko.observable();
+			this.title = ko.observable();
+			this.type = ko.observable();
+			Model.apply(this, arguments);
+		} ,
+		/** @lends FileModel.prototype */
+		{
+			someMethod: function(){}
+		}
+	);
 
-		this.id = ko.observable();
-		this.ownerName = ko.observable();
-		this.title = ko.observable();
-		this.type = ko.observable();
-
-		Model.apply(this, arguments); // after defined attributes
-
-	} , {
-		// Instance methods: copied to prototype
-	});
+	return FileModel;
 });
