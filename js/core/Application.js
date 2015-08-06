@@ -16,7 +16,7 @@ define(['infrastructure'], function(){
         function Application(options){
             options = options || {};
 
-            /** @param */
+            /** @arg*/
             this.version = '1.0.0';
         }
 

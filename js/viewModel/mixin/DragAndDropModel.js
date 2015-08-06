@@ -7,8 +7,7 @@ define(['knockout'], function(ko){
     /**
      * This provides methods used for event handling. It's not meant to
      * be used directly.
-     * @constructor DragAndDropModel
-     * @mixin
+     * @constructs DragAndDropModel
      * */
     function DragAndDropModel(){
 
@@ -30,9 +29,17 @@ define(['knockout'], function(ko){
         }, this);
     }
 
-    DragAndDropModel.prototype = {
+    DragAndDropModel.prototype =
+    /** @lends DragAndDropModel.prototype */
+    {
         constructor: DragAndDropModel,
 
+        /**
+         * Handler
+         * @public
+         * @param {Object} model
+         * @param {Event} event
+         * */
         ondragstart : function(model, event){
             event.dataTransfer.effectAllowed = "move";
             /**
@@ -41,63 +48,63 @@ define(['knockout'], function(ko){
             if (API_VirtualFileSystem.getSelectedTotalItemsLength() === 0){
                 return false;
             }
-
-            // todo вынести отсюда обработку ошибок
-            //API_VirtualFileSystem.getSelectedFolders().forEach(function(item){
-            //    item.isFailed(false); // для эффекта, если уже была зафейленна
-            //});
-
-            //var data = API_VirtualFileSystem.getDataOfMovingItems();
-            //var JSON = DragAndDropModel._serializationData(data); //{ files: [1,2,3], folders: [1,2,3]}
-
-
-            //event.dataTransfer.setData(DragAndDropModel._MIME_TYPE, JSON);
-
             event.dataTransfer.setData(DragAndDropModel._MIME_TYPE, "fake data");
-
             API_VirtualFileSystem.setIsMovingAllSelectedItemsState(true);
-
             this._createDragabbleElemView(event);
-
             DragAndDropModel._effectOnBodyScroll.start();
-
             return true;
         },
-
+        /**
+         * Handler
+         * @public
+         * @param {Object} model
+         * @param {Event} event
+         * */
         ondragend : function(model, event){
             event.stopImmediatePropagation();
-
             API_VirtualFileSystem.setIsMovingAllSelectedItemsState(false); //1
-
             event.dataTransfer.clearData(DragAndDropModel._MIME_TYPE);
-
             DragAndDropModel._effectOnBodyScroll.stop();
         },
-
+        /**
+         * Handler
+         * @public
+         * @param {Object} model
+         * @param {Event} event
+         * */
         ondragover : function(model, event){
             //event.stopPropagation();
             this.isTaking(true);
         },
-
+        /**
+         * Handler
+         * @public
+         * @param {Object} model
+         * @param {Event} event
+         * */
         ondragleave : function(model, event){
             event.stopImmediatePropagation();
-
             this.isTaking(false);
-
         },
-
+        /**
+         * Handler
+         * @public
+         * @param {Object} model
+         * @param {Event} event
+         * */
         ondragenter : function(model, event){
             event.dataTransfer.dropEffect  = 'copy';
-
-            //event.stopImmediatePropagation();
-
             this.isTaken(false); // для рестарта эффекта
-
             if (this.mayTake()){
                 this.isTaking(true);
             }
         },
-
+        /**
+         * Handler
+         * @public
+         * @param {Object} model
+         * @param {Event} event
+         * */
         ondrop : function(model, event){
             event.stopImmediatePropagation();
 
@@ -114,18 +121,25 @@ define(['knockout'], function(ko){
                         that._dropData(event);
                     }
                 });
-
             } else {
                 this.isFailed(true);
                 return false
             }
         },
-
+        /**
+         * Handler
+         * @public
+         * @param {Object} model
+         * @param {Event} event
+         * */
         onToggleSelectStateClick : function(model, event){
             this.isSelected(!this.isSelected());
             event.stopImmediatePropagation();
         },
-
+        /**
+         * Handler
+         * @private
+         * */
         _createDragabbleElemView : function (event){
             var count = API_VirtualFileSystem.getSelectedTotalItemsLength();
 
@@ -151,8 +165,11 @@ define(['knockout'], function(ko){
 
             return $image
         },
-
-        _dropData : function (event){
+        /**
+         * Handler
+         * @private
+         * */
+        _dropData : function (){
             var that = this;
 
             function endProcessHandler(){
@@ -180,13 +197,18 @@ define(['knockout'], function(ko){
         }
     };
 
+    /**
+     * @memberof DragAndDropModel
+     * @param {String} string
+     */
     DragAndDropModel._serializationData = function(numbers){
-        /** from json to object */
         return JSON.stringify(numbers);
     };
-
+    /**
+     * @memberof DragAndDropModel
+     * @param {String} string
+     */
     DragAndDropModel._deserializationData = function(string){
-        /** from object to json */
         return JSON.parse(string);
     };
 

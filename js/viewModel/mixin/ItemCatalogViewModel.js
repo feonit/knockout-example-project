@@ -8,7 +8,6 @@ define(['knockout'], function(ko){
     /**
      * This provides methods used for event handling.
      * @constructor ItemCatalogViewModel
-     * @mixin
      * */
     function ItemCatalogViewModel(){
         this.renamed = ko.observable(false);

@@ -1,0 +1,25 @@
+{
+  "name": "Catalog",
+  "version": "1.0.0",
+  "description": "example project",
+  "main": "index.js",
+  "scripts": {
+    "doc": "jsdoc -c conf.json -P package.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/feonit/knockout-example-project.git"
+  },
+  "keywords": [
+    "knockout",
+    "example",
+    "project",
+    "application"
+  ],
+  "author": "Leonid Orlov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/feonit/knockout-example-project/issues"
+  },
+  "homepage": "https://github.com/feonit/knockout-example-project#readme"
+}

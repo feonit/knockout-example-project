@@ -4,31 +4,57 @@
 define(['knockout', 'DirectoryTreeModel', 'FolderTreeViewModel', 'FileTreeViewModel'], function(ko, DirectoryTreeModel, FolderTreeViewModel, FileTreeViewModel){
 
     /**
-     * {VirtualFileSystem} class
      * Файловая система связывает носитель информации с одной стороны и API для доступа к файлам — с другой
      * Работа над множеством состоящем из файлов и папок
+     * @constructs VirtualFileSystem
      * */
     function VirtualFileSystemModel(options){
         options = options || {};
 
-        this.MAX_SIZE_OF_FILE_NAMES = 255;
+        /**
+         * Получить экземпляр каталога
+         * @function
+         * @return {DirectoryTreeModel}
+         * */
         this.directoryTreeModel = ko.observable(new DirectoryTreeModel());
+        /**
+         * Получить идентификатор владелеца каталога
+         * @arg
+         * @function
+         * @return {number}
+         * */
         this.owner_id = ko.observable(options.id);
 
+        /**
+         * Глобальный доступ к файловой системе
+         * @global
+         * */
         API_VirtualFileSystem = this;
 
+        // поведение
         this.getSelectedTotalItemsLength = ko.computed(function(){
             return this.getSelectedFolders().length + this.getSelectedFiles().length;
         }, this);
 
+        // поведение
         this.getSelectedTotalItems = ko.computed(function(){
             return (this.getSelectedFiles()).concat(this.getSelectedFolders())
         }, this);
     }
 
     VirtualFileSystemModel.prototype = {
+        /** @lends VirtualFileSystemModel.prototype */
+
         constructor: VirtualFileSystemModel,
 
+        /**
+         * Способ создания файла с предустановленным поведением
+         * @param {object} options — Опции
+         * @property {object} options.data — Данные для файла
+         * @property {FolderModel} options.parent — Ссылка на родителя
+         * @public
+         * @return {FileTreeViewModel} Созданный экземпляр файла
+         * */
         createFile : function(options){
             if (!options || !options.data || !options.parent){
                 throw TypeError();
@@ -39,7 +65,13 @@ define(['knockout', 'DirectoryTreeModel', 'FolderTreeViewModel', 'FileTreeViewMo
 
             return file;
         },
-
+        /**
+         * Способ создания папки с предустановленным поведением
+         * @param {object} options — Опции
+         * @property {object} options.data — Данные для папки
+         * @public
+         * @return {FolderTreeViewModel} Созданный экземпляр файла
+         * */
         createFolder: function(options){
             if (!options || !options.data){
                 throw TypeError();
@@ -52,27 +84,36 @@ define(['knockout', 'DirectoryTreeModel', 'FolderTreeViewModel', 'FileTreeViewMo
 
             return folder;
         },
-
+        /**
+         * Способ создания новой папки с дефолтными аргументами
+         * @public
+         * @return {FolderTreeViewModel} Созданный экземпляр файла
+         * */
         getNewEmptyFolder: function(){
+            var defaults = {
+                id: Math.round(Math.random()*10000000000), // random
+                title: 'Новая папка',
+                ownerName: 'me',
+                parent: this.directoryTreeModel().rootFolder()
+            };
             return new FolderTreeViewModel({
-                data: {
-                    id: Math.round(Math.random()*10000000000), // random
-                    title: 'Новая папка', // todo translation
-                    ownerName: 'me', // todo
-                    parent: this.directoryTreeModel().rootFolder()
-                }
-
+                data: defaults
             });
         },
-
+        /**
+         * Обработчик события пользовательского интерфейса на создание новой папки в каталоге
+         * @public
+         * */
         onClickCreateNewFolder: function(){
             var folder = this.getNewEmptyFolder();
-
             this.directoryTreeModel().rootFolder().childrens.unshift(folder);
-
             folder.openRenameForm();
         },
-
+        /**
+         * Получение экземпляров всех выбранных файлов
+         * @public
+         * @return {Array} Список выбранных файлов
+         * */
         getSelectedFiles : function(){
             var root = this.directoryTreeModel().rootFolder(),
                 selected = [],
@@ -103,10 +144,13 @@ define(['knockout', 'DirectoryTreeModel', 'FolderTreeViewModel', 'FileTreeViewMo
 
             reqursiveFolder(root);
 
-
             return selected;
         },
-
+        /**
+         * Получение экземпляров всех выбранных папок
+         * @public
+         * @return {Array} Список выбранных папок
+         * */
         getSelectedFolders : function(){
             var root = this.directoryTreeModel().rootFolder(),
                 selected = [],
@@ -135,7 +179,11 @@ define(['knockout', 'DirectoryTreeModel', 'FolderTreeViewModel', 'FileTreeViewMo
 
             return selected;
         },
-
+        /**
+         * Получение перечьня из двух списков идентификаторов выбранных файлов и папок
+         * @public
+         * @returns {{files: Array, folders: Array}}
+         * */
         getDataOfMovingItems : function(){
             var files_ids = (this.getSelectedFiles()).map(function(item){
                 return item.id();
@@ -150,35 +198,39 @@ define(['knockout', 'DirectoryTreeModel', 'FolderTreeViewModel', 'FileTreeViewMo
                 folders: folder_ids
             };
         },
-
+        /**
+         * Установка значения свойства isMoved для всех выбранных элементов каталога
+         * @public
+         * */
         setIsMovedAllSelectedItemsState : function(boolean){
-            /** method */
-
             ko.utils.arrayForEach(this.getSelectedTotalItems(), function(composite){ // and others
                 composite.isMoved(boolean);
             }, this);
         },
-
+        /**
+         * Сброс активности для всех элементов каталога
+         * @public
+         * */
         unselectAll: function(){
             this.getSelectedTotalItems().forEach(function(item){
                 item.isSelected(false);
             }, this);
         },
-
+        /**
+         * Установка значения свойства isMoving для всех выбранных элементов каталога
+         * @public
+         * */
         setIsMovingAllSelectedItemsState : function(boolean){
-            /** method */
-
             ko.utils.arrayForEach(this.getSelectedTotalItems(), function(item){
                 item.isMoving(boolean);
             }, this);
-
         },
-
+        /**
+         * Способ перемещения всех выбранных элементов в папку
+         * @this {VirtualFileSystemModel}
+         * @param {FolderTreeViewModel} folder Папка назначения
+         * */
         moveSelectedToFolder : function(folder){
-            /**
-             * @this {VirtualFileSystemModel}
-             * @param {FolderTreeViewModel} folder
-             * */
             var folders = this.getSelectedFolders();
             var files = this.getSelectedFiles();
 
@@ -194,15 +246,20 @@ define(['knockout', 'DirectoryTreeModel', 'FolderTreeViewModel', 'FileTreeViewMo
 
             folder.childrens.pushAll(folders);
             folder.files().models.pushAll(files);
-        },
-
-        //getFileIcon = function(){};
+        }
     };
 
+    /**
+     * Флаг контролирования процессов
+     * @memberof VirtualFileSystemModel
+     * @type Boolean
+     */
     VirtualFileSystemModel._inprocess = false;
 
     /**
-     * @this {FileTreeViewModel} or {FolderTreeViewModel}
+     * Поведение для только что выбранного элемента
+     * @memberof VirtualFileSystemModel
+     * @this {FileTreeViewModel|FolderTreeViewModel}
      * */
     VirtualFileSystemModel._behaviorOnSelectChange = function(){
         if (VirtualFileSystemModel._inprocess) return;
@@ -218,7 +275,10 @@ define(['knockout', 'DirectoryTreeModel', 'FolderTreeViewModel', 'FileTreeViewMo
 
         VirtualFileSystemModel._inprocess = false;
     };
-
+    /**
+     * Поведение для только что открытой папки
+     * @memberof VirtualFileSystemModel
+     * */
     VirtualFileSystemModel._behaviorOnOpenChange = function(){
         if (VirtualFileSystemModel._inprocess) return;
 

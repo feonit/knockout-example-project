@@ -12,7 +12,7 @@ define(['_', 'knockout', 'DragAndDropModel', 'FileViewModel'], function(
          * @constructs FileTreeViewModel
          * @param {Object} options
          * @extends FileViewModel
-         * @mixes DragAndDropModel
+         * @extends DragAndDropModel
          * */
         function FileTreeViewModel(options){
             options = options || {};

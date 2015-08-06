@@ -14,8 +14,8 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
          * @constructs FolderTreeViewModel
          * @param {Object} options
          * @extends FolderModel
-         * @mixes DragAndDropModel
-         * @mixes ItemCatalogViewModel
+         * @extends DragAndDropModel
+         * @extends ItemCatalogViewModel
          * */
         function FolderTreeViewModel(options){
 
