@@ -7,6 +7,7 @@ define(['knockout'], function(ko){
     /**
      * This provides methods used for event handling. It's not meant to
      * be used directly.
+     * @class DragAndDropModel
      * @constructs DragAndDropModel
      * */
     function DragAndDropModel(){

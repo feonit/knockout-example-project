@@ -7,6 +7,7 @@ define(['_', 'knockout', 'FileModel', 'ItemCatalogViewModel'], function(_, ko, F
     var FileViewModel = _.defineSubclass(FileModel,
 
         /**
+         * @class FileViewModel
          * @constructor FileViewModel
          * @extends FileModel
          * @mixes ItemCatalogViewModel

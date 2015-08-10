@@ -11,8 +11,9 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
 
         /**
          * A class for view of folder at tree
+         * @class FolderTreeViewModel
          * @constructs FolderTreeViewModel
-         * @param {Object} options
+         * @param {Object} options — Optional Object with extra parameters (see below)
          * @extends FolderModel
          * @extends DragAndDropModel
          * @extends ItemCatalogViewModel
@@ -63,7 +64,7 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
             /**
              * @public
              * @param {Function}
-             * @return {FolderTreeViewModel}
+             * @return {?FolderTreeViewModel}
              * */
             this.parent = ko.observable(options.data.parent);
             /**

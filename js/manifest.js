@@ -21,6 +21,8 @@ require.config({
 		_: 									'core/_',
 		Application: 						'core/Application',
 		Model: 								'core/Model',
+		infrastructure: 					'core/infrastructure',
+		configuration: 						'core/configuration',
 
 		/**
 		 * package for catalog

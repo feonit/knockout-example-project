@@ -5,6 +5,7 @@ define(['_', 'Model', 'knockout'], function(_, Model, ko){
 	var FileModel = _.defineSubclass(Model,
 		/**
 		 * Represents a file
+		 * @class FileModel
 		 * @constructor FileModel
 		 * @extends Model
 		 * @param {object} attributes - The data of the file

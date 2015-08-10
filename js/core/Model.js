@@ -4,9 +4,9 @@
 define(['knockout', 'knockout.mapping'], function(ko){
 
     /**
-     * @class Model
+     * @class Предоставляет общие методы для всех моделей данных
      * @constructs Model
-     * @param {Object} attributes - The attributes for an instance
+     * @param {Object} attributes - Хеш, содержащий состояние модели
      * @return {Model}
      * */
     function Model(attributes){
@@ -16,7 +16,7 @@ define(['knockout', 'knockout.mapping'], function(ko){
     Model.prototype = {
         constructor: Model,
         /**
-         * Sets the attributes for an instance
+         * Способ передачи начальных значений атрибутов
          * @public
          * @param {Object} attributes - The attributes for an instance
          * */
@@ -24,7 +24,7 @@ define(['knockout', 'knockout.mapping'], function(ko){
             ko.mapping.fromJS(attributes, {}, this);
         },
         /**
-         * Method for load data
+         * Обновляет состояние модели данными с сервера
          * @abstract
          * @return {boolean}
          * */
@@ -32,7 +32,7 @@ define(['knockout', 'knockout.mapping'], function(ko){
             throw new Error('must be implemented by subclass!');
         },
         /**
-         * Method for parse data and set attributes
+         * Парсит сырой ответ с сервера
          * @abstract
          * @return {boolean}
          * */

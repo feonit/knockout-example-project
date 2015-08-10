@@ -6,7 +6,9 @@ define(['knockout', 'DirectoryTreeModel', 'FolderTreeViewModel', 'FileTreeViewMo
     /**
      * Файловая система связывает носитель информации с одной стороны и API для доступа к файлам — с другой
      * Работа над множеством состоящем из файлов и папок
+     * @class VirtualFileSystem
      * @constructs VirtualFileSystem
+     * @param {Object} options — Optional Object with extra parameters (see below)
      * */
     function VirtualFileSystemModel(options){
         options = options || {};
@@ -182,7 +184,7 @@ define(['knockout', 'DirectoryTreeModel', 'FolderTreeViewModel', 'FileTreeViewMo
         /**
          * Получение перечьня из двух списков идентификаторов выбранных файлов и папок
          * @public
-         * @returns {{files: Array, folders: Array}}
+         * @returns {{files: {FileModel[]}, folders: {FolderModel[]}}}
          * */
         getDataOfMovingItems : function(){
             var files_ids = (this.getSelectedFiles()).map(function(item){

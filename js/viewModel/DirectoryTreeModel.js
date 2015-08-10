@@ -51,6 +51,7 @@ define(['knockout', '_', 'Model'], function(ko, _, Model){
     var DirectoryTreeModel = _.defineSubclass(Model,
         /**
          * A constructor for Directory Tree view
+         * @class DirectoryTreeModel
          * @constructs DirectoryTreeModel
          * @extends Model
          * */

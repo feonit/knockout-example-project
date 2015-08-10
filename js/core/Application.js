@@ -2,15 +2,14 @@
  * @module Application
  * @requires infrastructure
  * */
-define(['infrastructure'], function(){
+define(['infrastructure', 'configuration'], function(){
 
     var Application = (function(window, document, $, ko){
 
         /**
-         * A constructor for Application
-         * @class Application
+         * @class A class for instance of application
          * @constructs Application
-         * @param {Object} options - The options for an instance
+         * @param {Object} options — Optional Object with extra parameters (see below)
          * @return {Application}
          * */
         function Application(options){

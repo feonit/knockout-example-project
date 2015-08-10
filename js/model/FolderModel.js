@@ -5,6 +5,7 @@ define(['_', 'Model', 'FilesCollection'], function(_, Model, FilesCollection){
     return _.defineSubclass(Model,
         /**
          * Represents a folder
+         * @class FolderModel
          * @constructor FolderModel
          * @extends Model
          * * */

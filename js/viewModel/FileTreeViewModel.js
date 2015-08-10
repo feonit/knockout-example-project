@@ -9,8 +9,11 @@ define(['_', 'knockout', 'DragAndDropModel', 'FileViewModel'], function(
 
         /**
          * A constructor for file view
+         * @class FileTreeViewModel
          * @constructs FileTreeViewModel
-         * @param {Object} options
+         * @param {Object} options — Optional Object with extra parameters (see below)
+         * @param {Object} options.data — This component's attributes for extend of FileModel
+         * @param {Object} options.parent — This link to parent of current folder instance
          * @extends FileViewModel
          * @extends DragAndDropModel
          * */

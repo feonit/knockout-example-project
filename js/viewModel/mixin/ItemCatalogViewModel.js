@@ -7,6 +7,7 @@ define(['knockout'], function(ko){
 
     /**
      * This provides methods used for event handling.
+     * @class ItemCatalogViewModel
      * @constructor ItemCatalogViewModel
      * */
     function ItemCatalogViewModel(){
