@@ -22,7 +22,8 @@ require.config({
 		Application: 						'core/Application',
 		Model: 								'core/Model',
 		infrastructure: 					'core/infrastructure',
-		configuration: 						'core/configuration',
+		configurationSystem: 				'system/configuration/configuration',
+		CommunicationSystem: 				'system/communication/CommunicationSystem',
 
 		/**
 		 * package for catalog
@@ -32,7 +33,7 @@ require.config({
 		FolderTreeViewModel: 				'viewModel/FolderTreeViewModel',
 		FileTreeViewModel: 					'viewModel/FileTreeViewModel',
 		DragAndDropModel: 					'viewModel/mixin/DragAndDropModel',
-		VirtualFileSystemModel: 			'system/VirtualFileSystemModel',
+		FileSystem: 						'system/FileSystem',
 		FilesCollection: 					'collection/FilesCollection',
 		ItemCatalogViewModel: 				'viewModel/mixin/ItemCatalogViewModel',
 		FileModel: 							'model/FileModel',

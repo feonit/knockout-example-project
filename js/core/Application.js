@@ -2,7 +2,7 @@
  * @module Application
  * @requires infrastructure
  * */
-define(['infrastructure', 'configuration'], function(){
+define(['infrastructure', 'configurationSystem'], function(){
 
     var Application = (function(window, document, $, ko){
 
@@ -30,16 +30,16 @@ define(['infrastructure', 'configuration'], function(){
              * */
             start : function(){
 
-                require(['VirtualFileSystemModel'], function(VirtualFileSystemModel){
+                require(['FileSystem'], function(FileSystem){
 
                     $(document).ready(function(){
 
                         window.ROOT = ko.observable({
-                            virtualFileSystemModel : ko.observable(new VirtualFileSystemModel())
+                            fileSystem : ko.observable(new FileSystem())
                         });
 
-                        window.ROOT().virtualFileSystemModel().directoryTreeModel().fetch();
-                        window.ROOT().virtualFileSystemModel().directoryTreeModel().rootFolder().open();
+                        window.ROOT().fileSystem().directoryTreeModel().readRequest();
+                        window.ROOT().fileSystem().directoryTreeModel().rootFolder().open();
 
                         ko.applyBindings(window.ROOT);
 

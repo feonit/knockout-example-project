@@ -74,7 +74,7 @@ define(['knockout', '_', 'Model'], function(ko, _, Model){
              * Method for load data
              * @public
              * */
-            fetch : function(){
+            readRequest : function(){
                 this.parse(directoryTreeData);
             },
             /**

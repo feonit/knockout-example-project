@@ -41,7 +41,7 @@ define(['knockout'], function(ko){
     FileCollcetions.prototype = {
         constructor: FileCollcetions,
 
-        fetch : function(options){
+        readRequest : function(options){
 
             options = options || {};
 

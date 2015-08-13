@@ -218,7 +218,7 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
                 options = options || {};
 
                 if(!this.files() || !this.files().isFetched()){
-                    this.files().fetch({
+                    this.files().readRequest({
                         callback: (function(){
                             this.isOpened(true);
                             options.callback && options.callback();

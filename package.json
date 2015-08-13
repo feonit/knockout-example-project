@@ -21,5 +21,11 @@
   "bugs": {
     "url": "https://github.com/feonit/knockout-example-project/issues"
   },
-  "homepage": "https://github.com/feonit/knockout-example-project#readme"
+  "homepage": "https://github.com/feonit/knockout-example-project#readme",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-jsdoc": "^0.1.4",
+    "gulp-shell": "^0.4.2",
+    "jsdoc": "^3.3.2"
+  }
 }

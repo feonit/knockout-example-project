@@ -1,5 +1,4 @@
 /**
- * @module configuration
  * @requires jquery @see
  * */
 define(['jquery'], function(jquery) {

@@ -10,7 +10,7 @@ define(['knockout', 'DirectoryTreeModel', 'FolderTreeViewModel', 'FileTreeViewMo
      * @constructs VirtualFileSystem
      * @param {Object} options — Optional Object with extra parameters (see below)
      * */
-    function VirtualFileSystemModel(options){
+    function FileSystem(options){
         options = options || {};
 
         /**
@@ -44,10 +44,10 @@ define(['knockout', 'DirectoryTreeModel', 'FolderTreeViewModel', 'FileTreeViewMo
         }, this);
     }
 
-    VirtualFileSystemModel.prototype = {
-        /** @lends VirtualFileSystemModel.prototype */
+    FileSystem.prototype = {
+        /** @lends FileSystem.prototype */
 
-        constructor: VirtualFileSystemModel,
+        constructor: FileSystem,
 
         /**
          * Способ создания файла с предустановленным поведением
@@ -63,7 +63,7 @@ define(['knockout', 'DirectoryTreeModel', 'FolderTreeViewModel', 'FileTreeViewMo
             }
             var file = new FileTreeViewModel(options);
 
-            file.isSelected.subscribe(VirtualFileSystemModel._behaviorOnSelectChange, file);
+            file.isSelected.subscribe(FileSystem._behaviorOnSelectChange, file);
 
             return file;
         },
@@ -81,8 +81,8 @@ define(['knockout', 'DirectoryTreeModel', 'FolderTreeViewModel', 'FileTreeViewMo
 
             var folder = new FolderTreeViewModel(options);
 
-            folder.isSelected.subscribe(VirtualFileSystemModel._behaviorOnSelectChange, folder);
-            folder.isOpened.subscribe(VirtualFileSystemModel._behaviorOnOpenChange, folder);
+            folder.isSelected.subscribe(FileSystem._behaviorOnSelectChange, folder);
+            folder.isOpened.subscribe(FileSystem._behaviorOnOpenChange, folder);
 
             return folder;
         },
@@ -229,7 +229,7 @@ define(['knockout', 'DirectoryTreeModel', 'FolderTreeViewModel', 'FileTreeViewMo
         },
         /**
          * Способ перемещения всех выбранных элементов в папку
-         * @this {VirtualFileSystemModel}
+         * @this {FileSystem}
          * @param {FolderTreeViewModel} folder Папка назначения
          * */
         moveSelectedToFolder : function(folder){
@@ -253,20 +253,20 @@ define(['knockout', 'DirectoryTreeModel', 'FolderTreeViewModel', 'FileTreeViewMo
 
     /**
      * Флаг контролирования процессов
-     * @memberof VirtualFileSystemModel
+     * @memberof FileSystem
      * @type Boolean
      */
-    VirtualFileSystemModel._inprocess = false;
+    FileSystem._inprocess = false;
 
     /**
      * Поведение для только что выбранного элемента
-     * @memberof VirtualFileSystemModel
+     * @memberof FileSystem
      * @this {FileTreeViewModel|FolderTreeViewModel}
      * */
-    VirtualFileSystemModel._behaviorOnSelectChange = function(){
-        if (VirtualFileSystemModel._inprocess) return;
+    FileSystem._behaviorOnSelectChange = function(){
+        if (FileSystem._inprocess) return;
 
-        VirtualFileSystemModel._inprocess = true;
+        FileSystem._inprocess = true;
 
         this.parent().syncRecursivelyParentsFoldersChosen();
 
@@ -275,24 +275,24 @@ define(['knockout', 'DirectoryTreeModel', 'FolderTreeViewModel', 'FileTreeViewMo
             this.syncRecursivelyChildrensItemsChosen();
         }
 
-        VirtualFileSystemModel._inprocess = false;
+        FileSystem._inprocess = false;
     };
     /**
      * Поведение для только что открытой папки
-     * @memberof VirtualFileSystemModel
+     * @memberof FileSystem
      * */
-    VirtualFileSystemModel._behaviorOnOpenChange = function(){
-        if (VirtualFileSystemModel._inprocess) return;
+    FileSystem._behaviorOnOpenChange = function(){
+        if (FileSystem._inprocess) return;
 
-        VirtualFileSystemModel._inprocess = true;
+        FileSystem._inprocess = true;
 
         // контроль дочерних элементов
         if (this instanceof FolderTreeViewModel){
             this.syncRecursivelyChildrensItemsChosen();
         }
 
-        VirtualFileSystemModel._inprocess = false;
+        FileSystem._inprocess = false;
     };
 
-    return VirtualFileSystemModel;
+    return FileSystem;
 });

@@ -57,14 +57,12 @@ ul{
 
 .inside_image {
     position:absolute;
-    width:26px;
-    height:26px;
-    overflow:hidden;
-    top:50%;
-    left:50%;
-    transform:translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
     background-repeat:no-repeat;
-    background-image:url('/images/main_sprite_image.png');
+    background-image:url('../image/camera.png');
+    background-size: cover;
+    display: block;
 }
 
 .file_name {
@@ -94,14 +92,14 @@ ul{
       width: 50px;
       height: 50px;
       background-color: red;
-      background: url(./image/opened.jpg);
+      background: url(../image/opened.jpg);
       background-size: 100%;
   }
 
   .closed_folder_ico{
       width: 50px;
       height: 50px;
-      background: url(./image/closed.jpg);
+      background: url(../image/closed.jpg);
       background-size: 100%;
   }
 

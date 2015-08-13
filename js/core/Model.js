@@ -1,44 +1,73 @@
 /**
  * @author Feonit feonitu@yandex.ru
  */
-define(['knockout', 'knockout.mapping'], function(ko){
+define(['_', 'knockout', 'CommunicationSystem', 'knockout.mapping'], function(_, ko, CommunicationSystem){
 
-    /**
-     * @class Предоставляет общие методы для всех моделей данных
-     * @constructs Model
-     * @param {Object} attributes - Хеш, содержащий состояние модели
-     * @return {Model}
-     * */
-    function Model(attributes){
-        this.setAttributes(attributes);
-    }
 
-    Model.prototype = {
-        constructor: Model,
+    var Model = _.defineSubclass(CommunicationSystem,
         /**
-         * Способ передачи начальных значений атрибутов
-         * @public
-         * @param {Object} attributes - The attributes for an instance
+         * @class Предоставляет общие методы для всех моделей данных
+         * @constructs Model
+         * @param {Object} attributes - Хеш, содержащий состояние модели
+         * @return {Model}
          * */
-        setAttributes: function(attributes){
-            ko.mapping.fromJS(attributes, {}, this);
+        function Model(attributes){
+            this._setAttributes(attributes);
         },
-        /**
-         * Обновляет состояние модели данными с сервера
-         * @abstract
-         * @return {boolean}
-         * */
-        fetch : function(){
-            throw new Error('must be implemented by subclass!');
-        },
-        /**
-         * Парсит сырой ответ с сервера
-         * @abstract
-         * @return {boolean}
-         * */
-        parse : function(){
-            throw new Error('must be implemented by subclass!');
+        /** @lends Model.prototype */
+        {
+            constructor: Model,
+            /**
+             * Способ установки начальных значений для атрибутов модели
+             * @private
+             * @param {Object} attributes - The attributes for an instance
+             * */
+            _setAttributes: function(attributes){
+                ko.mapping.fromJS(attributes, {}, this);
+            },
+
+            /**
+             * Парсит сырой ответ с сервера
+             * @abstract
+             * @return {boolean}
+             * */
+            parse : function(){
+                throw new Error('must be implemented by subclass!');
+            },
+            /**
+             * Запрос на создание объекта сущности на сервере
+             * @abstract
+             * @return {XMLHttpRequest}
+             * */
+            createRequest: function(){
+                throw new Error('must be implemented by subclass!');
+            },
+            /**
+             * Обновляет текущие значения атрибутов модели данными с сервера
+             * @abstract
+             * @return {XMLHttpRequest}
+             * */
+            readRequest: function(){
+                throw new Error('must be implemented by subclass!');
+            },
+            /**
+             * Обновляет состояние объекта сущности на сервере
+             * @abstract
+             * @return {XMLHttpRequest}
+             * */
+            updateRequest: function(){
+                throw new Error('must be implemented by subclass!');
+            },
+            /**
+             * Удаляет объект сущности на сервере
+             * @abstract
+             * @return {XMLHttpRequest}
+             * */
+            deleteRequest: function(){
+                throw new Error('must be implemented by subclass!');
+            }
         }
-    };
+    );
+
     return Model;
 });
