@@ -14,6 +14,8 @@ require.config({
 		knockout: 							'../lib/knockout',
 		jquery: 							'../lib/jquery',
 		'knockout.mapping': 				'../lib/knockout.mapping',
+		'text':						'../lib/require-text',
+		'mustache':							'../lib/mustache',
 
 		/**
 		 * core
@@ -22,9 +24,9 @@ require.config({
 		Application: 						'core/Application',
 		Model: 								'core/Model',
 		infrastructure: 					'core/infrastructure',
-		configurationSystem: 				'system/configuration/configuration',
-		CommunicationSystem: 				'system/communication/CommunicationSystem',
-
+		configurationSystem: 				'systems/configuration/configuration',
+		CommunicationSystem: 				'systems/communication/CommunicationSystem',
+		templateSystem:						'systems/engine/templateSystem',
 		/**
 		 * package for catalog
 		 *
@@ -33,7 +35,7 @@ require.config({
 		FolderTreeViewModel: 				'viewModel/FolderTreeViewModel',
 		FileTreeViewModel: 					'viewModel/FileTreeViewModel',
 		DragAndDropModel: 					'viewModel/mixin/DragAndDropModel',
-		FileSystem: 						'system/FileSystem',
+		FileSystem: 						'systems/FileSystem',
 		FilesCollection: 					'collection/FilesCollection',
 		ItemCatalogViewModel: 				'viewModel/mixin/ItemCatalogViewModel',
 		FileModel: 							'model/FileModel',

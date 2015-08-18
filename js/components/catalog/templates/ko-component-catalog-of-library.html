@@ -1,0 +1,15 @@
+<!-- ko with: fileSystem() -->
+<div class="library_list margin_top_20px deleted_item">
+    <button data-bind="click: onClickCreateNewFolder" type="button" data-title="Создать папку" class="btn btns_blue image_button delay">
+        Создать папку
+        <span class="inside_button_image folder_format"></span>
+    </button>
+</div>
+<ul class="main_file_list">
+    <!-- ko with: directoryTreeModel() -->
+    <!-- ko template: { name: 'js/components/catalog/templates/_folder_catalog_template', data: rootFolder() } -->
+    <!-- /ko -->
+    <!-- /ko -->
+</ul>
+<!-- /ko -->
+

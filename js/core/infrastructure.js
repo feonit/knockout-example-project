@@ -4,7 +4,7 @@
  * @requires knockout @see
  * @requires knockout.mapping
  * */
-define(['jquery','knockout','knockout.mapping'], function(jquery, knockout, mapping) {
+define(['jquery','knockout','knockout.mapping', 'text', 'mustache'], function(jquery, knockout, mapping) {
 
 	/** @global */
 	var $ = window.$ = jquery;

@@ -12,6 +12,7 @@ define(['_', 'knockout', 'CommunicationSystem', 'knockout.mapping'], function(_,
          * @return {Model}
          * */
         function Model(attributes){
+            this.id = ko.observable();
             this._setAttributes(attributes);
         },
         /** @lends Model.prototype */
@@ -65,6 +66,9 @@ define(['_', 'knockout', 'CommunicationSystem', 'knockout.mapping'], function(_,
              * */
             deleteRequest: function(){
                 throw new Error('must be implemented by subclass!');
+            },
+            isNew: function(){
+                return !!this.id();
             }
         }
     );
