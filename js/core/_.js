@@ -59,10 +59,32 @@ define([], function(){
         return o;
     }
 
-    return {
+    var ObjProto = Object.prototype;
+    var toString = ObjProto.toString;
+
+    var _ = {
         defineSubclass: defineSubclass,
         inherit: inherit,
         mix: mix,
         extend: extend
     };
+
+    // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp, isError.
+    Array.prototype.forEach.call(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error'], function(name) {
+        _['is' + name] = function(obj) {
+            return toString.call(obj) === '[object ' + name + ']';
+        };
+    });
+
+    _.isObject = function (obj) {
+        var type = typeof obj;
+        return type === 'function' || type === 'object' && !!obj;
+    };
+
+    // Is a given value a boolean?
+    _.isBoolean = function(obj) {
+        return obj === true || obj === false || toString.call(obj) === '[object Boolean]';
+    };
+
+    return _;
 });

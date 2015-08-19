@@ -14,6 +14,8 @@ define([], /** @lends Mediator */ function(){
          */
         function Mediator() {
             this._topics = {};
+
+            this._targets = {};
         }
 
         /**
@@ -70,6 +72,63 @@ define([], /** @lends Mediator */ function(){
                 this._topics[ topic ][ i ].callback.apply( this._topics[ topic ][ i ].context, args );
             }
             return true;
+        };
+
+        Mediator.prototype.on = function ( targetName, eventName, callback, context ) {
+            if( ! this._targets.hasOwnProperty( targetName ) ) {
+                this._targets[ targetName ] = {};
+            }
+
+            if( ! this._targets[ targetName ].hasOwnProperty( eventName ) ) {
+                this._targets[ targetName ][ eventName ] = [];
+            }
+
+            this._targets[ targetName ][ eventName ].push( { callback: callback, context: context } );
+            return true;
+        };
+
+        Mediator.prototype.trigger = function () {
+            var args = Array.prototype.slice.call( arguments );
+            var targetName = args.shift();
+            var eventName = args.shift();
+
+            if( ! this._targets.hasOwnProperty( targetName ) ) {
+                return false;
+            }
+
+            if( ! this._targets[ targetName ].hasOwnProperty( eventName ) ) {
+                return false;
+            }
+
+            for( var i = 0, len = this._targets[ targetName ][ eventName ].length; i < len; i++ ) {
+                this._targets[ targetName ][ eventName ][ i ]
+                    .callback.apply( this._targets[ targetName ][ eventName ][ i ].context, args );
+            }
+            return true;
+        };
+
+        Mediator.prototype.off = function ( targetName, eventName, callback ) {
+            if( ! this._targets.hasOwnProperty( targetName ) ) {
+                return false;
+            }
+
+            if( ! this._targets[ targetName ].hasOwnProperty( eventName ) ) {
+                return false;
+            }
+
+            if ( ! callback ){
+                this._targets[ targetName ][ eventName ] = [];
+                return true;
+            }
+
+            for( var i = 0, len = this._targets[ targetName ][ eventName ].length; i < len; i++ ) {
+                if( this._targets[ targetName ][ eventName ][ i ].callback === callback ) {
+                    this._targets[ targetName ][ eventName ].splice( i, 1 );
+                    return true;
+                }
+            }
+
+            return false;
         };
 
         return Mediator;

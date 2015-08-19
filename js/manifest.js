@@ -23,6 +23,7 @@ require.config({
 		_: 									'core/_',
 		Application: 						'core/Application',
 		Model: 								'core/Model',
+		View: 								'core/View',
 		infrastructure: 					'core/infrastructure',
 		configurationSystem: 				'systems/configuration/configuration',
 		CommunicationSystem: 				'systems/communication/CommunicationSystem',
