@@ -60,7 +60,7 @@ define(['knockout'], function(ko){
         parse : function(filesData){
             var files = filesData.data.map(function(fileData){
 
-                return API_VirtualFileSystem.createFile({
+                return ROOT.catalogViewModel().createFile({
                     data : fileData,
                     parent: this.parent()
                 });

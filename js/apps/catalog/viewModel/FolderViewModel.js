@@ -7,18 +7,18 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
 
     "use strict";
 
-    var FolderTreeViewModel = _.defineSubclass(FolderModel,
+    var FolderViewModel = _.defineSubclass(FolderModel,
 
         /**
          * A class for view of folder at tree
-         * @class FolderTreeViewModel
-         * @constructs FolderTreeViewModel
+         * @class FolderViewModel
+         * @constructs FolderViewModel
          * @param {Object} options — Optional Object with extra parameters (see below)
          * @extends FolderModel
          * @extends DragAndDropModel
          * @extends ItemCatalogViewModel
          * */
-        function FolderTreeViewModel(options){
+        function FolderViewModel(options){
 
             FolderModel.call(this, options.data);
             DragAndDropModel.apply(this);
@@ -64,7 +64,7 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
             /**
              * @public
              * @param {Function}
-             * @return {?FolderTreeViewModel}
+             * @return {?FolderViewModel}
              * */
             this.parent = ko.observable(options.data.parent);
             /**
@@ -101,11 +101,11 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
             }
         },
 
-        /** @lends FolderTreeViewModel.prototype */
+        /** @lends FolderViewModel.prototype */
         {
             /**
              * Opens or closes the folder
-             * @this FolderTreeViewModel
+             * @this FolderViewModel
              * @param {object} model
              * @param {event} event
              * */
@@ -117,7 +117,7 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
 
             /**
              * Gets the number of elements in the tree
-             * @this FolderTreeViewModel
+             * @this FolderViewModel
              * */
             getTotalItemsCount: function(){
                 return this.childrens().length + this.files().models().length;
@@ -125,7 +125,7 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
 
             /**
              * Gets the number of the selected elements in the tree
-             * @this FolderTreeViewModel
+             * @this FolderViewModel
              * */
             getSelectedItemsCount: function(){
                 var count = 0;
@@ -141,7 +141,7 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
 
             /**
              * Include all elements of the state as the selected
-             * @this FolderTreeViewModel
+             * @this FolderViewModel
              * @public
              * */
             selectAll: function(){
@@ -150,7 +150,7 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
 
             /**
              * Disable all selected elements
-             * @this FolderTreeViewModel
+             * @this FolderViewModel
              * @public
              * */
             unselectAll: function(){
@@ -159,7 +159,7 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
 
             /**
              * Enable or disable the selection status of all child elements, depending on the state of the current folder
-             * @this FolderTreeViewModel
+             * @this FolderViewModel
              * @public
              * */
             syncRecursivelyChildrensItemsChosen: function(){
@@ -168,7 +168,7 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
 
             /**
              *
-             * @this FolderTreeViewModel
+             * @this FolderViewModel
              * @public
              * */
             syncRecursivelyParentsFoldersChosen: function(){
@@ -193,7 +193,7 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
 
             /**
              * Sets the state selected
-             * @this FolderTreeViewModel
+             * @this FolderViewModel
              * @param {boolean} boolean - is selected or no
              * @private
              * */
@@ -210,7 +210,7 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
 
             /**
              * Loads the data and opens the folder
-             * @this FolderTreeViewModel
+             * @this FolderViewModel
              * @param {object} options - options.callback
              * @public
              * */
@@ -232,7 +232,7 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
 
             /**
              * Close the folder
-             * @this FolderTreeViewModel
+             * @this FolderViewModel
              * @public
              * */
             close : function(){
@@ -241,8 +241,8 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
         }
     );
 
-    _.mix(FolderTreeViewModel.prototype, ItemCatalogViewModel.prototype);
-    _.mix(FolderTreeViewModel.prototype, DragAndDropModel.prototype);
+    _.mix(FolderViewModel.prototype, ItemCatalogViewModel.prototype);
+    _.mix(FolderViewModel.prototype, DragAndDropModel.prototype);
 
-    return FolderTreeViewModel;
+    return FolderViewModel;
 });

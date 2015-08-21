@@ -43,9 +43,7 @@ define(['_', 'mediator'], function(_, mediator){
             eventName = args.shift();
             var attr = [targetName, eventName];
 
-            attr.concat(args);
-
-            mediator.trigger.apply(mediator, attr );
+            mediator.trigger.apply(mediator, attr.concat(args) );
         },
         /**
          * Метод позволяет слушать другие объекты
@@ -74,9 +72,8 @@ define(['_', 'mediator'], function(_, mediator){
         trigger: function(eventName){
             var args = Array.prototype.slice.call( arguments );
             var attr = [this.componentName, args.shift()];
-            attr.concat(args);
 
-            mediator.trigger.apply(mediator, attr);
+            mediator.trigger.apply(mediator, attr.concat(args));
         }
     };
 

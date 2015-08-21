@@ -30,21 +30,16 @@ define(['infrastructure', 'configurationSystem', 'templateSystem'], function(){
              * */
             start : function(){
 
-                require(['FileSystem'], function(FileSystem){
+                require(['CatalogComponent'], function(){
 
                     $(document).ready(function(){
 
-                        window.ROOT = ko.observable({
-                            fileSystem : ko.observable(new FileSystem())
-                        });
-
-                        window.ROOT().fileSystem().directoryTreeModel().readRequest();
-                        window.ROOT().fileSystem().directoryTreeModel().rootFolder().open();
+                        window.ROOT = {
+                            catalogViewModel : ko.observable('')
+                        };
 
                         ko.applyBindings(window.ROOT);
-
                     });
-
                 });
             },
 

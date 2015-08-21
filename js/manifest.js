@@ -32,16 +32,16 @@ require.config({
 		 * package for catalog
 		 *
 		 * */
-		DirectoryTreeModel: 				'viewModel/DirectoryTreeModel',
-		FolderTreeViewModel: 				'viewModel/FolderTreeViewModel',
-		FileTreeViewModel: 					'viewModel/FileTreeViewModel',
-		DragAndDropModel: 					'viewModel/mixin/DragAndDropModel',
-		FileSystem: 						'systems/FileSystem',
-		FilesCollection: 					'collection/FilesCollection',
-		ItemCatalogViewModel: 				'viewModel/mixin/ItemCatalogViewModel',
-		FileModel: 							'model/FileModel',
-		FolderModel: 						'model/FolderModel',
-		FileViewModel: 						'viewModel/FileViewModel',
+		CatalogViewModel: 					'apps/catalog/viewModel/CatalogViewModel',
+		FolderViewModel: 					'apps/catalog/viewModel/FolderViewModel',
+		FileViewModel: 						'apps/catalog/viewModel/FileViewModel',
+		DragAndDropModel: 					'apps/catalog/viewModel/mixin/DragAndDropModel',
+		FilesCollection: 					'apps/catalog/collection/FilesCollection',
+		ItemCatalogViewModel: 				'apps/catalog/viewModel/mixin/ItemCatalogViewModel',
+		FileModel: 							'apps/catalog/models/FileModel',
+		FolderModel: 						'apps/catalog/models/FolderModel',
+
+		CatalogComponent: 					'apps/catalog/CatalogComponent',
 
 	},
 

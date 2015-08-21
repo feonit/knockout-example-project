@@ -46,11 +46,11 @@ define(['knockout'], function(ko){
             /**
              * Fired on an element when a drag is started.
              * */
-            if (API_VirtualFileSystem.getSelectedTotalItemsLength() === 0){
+            if (ROOT.catalogViewModel().getSelectedTotalItemsLength() === 0){
                 return false;
             }
             event.dataTransfer.setData(DragAndDropModel._MIME_TYPE, "fake data");
-            API_VirtualFileSystem.setIsMovingAllSelectedItemsState(true);
+            ROOT.catalogViewModel().setIsMovingAllSelectedItemsState(true);
             this._createDragabbleElemView(event);
             DragAndDropModel._effectOnBodyScroll.start();
             return true;
@@ -63,7 +63,7 @@ define(['knockout'], function(ko){
          * */
         ondragend : function(model, event){
             event.stopImmediatePropagation();
-            API_VirtualFileSystem.setIsMovingAllSelectedItemsState(false); //1
+            ROOT.catalogViewModel().setIsMovingAllSelectedItemsState(false); //1
             event.dataTransfer.clearData(DragAndDropModel._MIME_TYPE);
             DragAndDropModel._effectOnBodyScroll.stop();
         },
@@ -142,7 +142,7 @@ define(['knockout'], function(ko){
          * @private
          * */
         _createDragabbleElemView : function (event){
-            var count = API_VirtualFileSystem.getSelectedTotalItemsLength();
+            var count = ROOT.catalogViewModel().getSelectedTotalItemsLength();
 
             var $image = $('#js_drag_item');
 
@@ -174,12 +174,12 @@ define(['knockout'], function(ko){
             var that = this;
 
             function endProcessHandler(){
-                API_VirtualFileSystem.moveSelectedToFolder(that);               // 1
-                API_VirtualFileSystem.setIsMovedAllSelectedItemsState(true);    // 2
-                API_VirtualFileSystem.unselectAll();                            // 3
+                ROOT.catalogViewModel().moveSelectedToFolder(that);               // 1
+                ROOT.catalogViewModel().setIsMovedAllSelectedItemsState(true);    // 2
+                ROOT.catalogViewModel().unselectAll();                            // 3
             }
 
-            var data = API_VirtualFileSystem.getDataOfMovingItems();
+            var data = ROOT.catalogViewModel().getDataOfMovingItems();
 
             var $xhr = $.ajax({
                 url : 'some_url_for_save_change',

@@ -6,9 +6,9 @@
     <script async src="./lib/require.js" data-main="./js/manifest.js"></script>
     <link rel="stylesheet" type="text/css" href="./style/main.css" />
 </head>
-<body data-bind="with: ROOT() ">
+<body data-bind="with: $root ">
 
-<div data-bind="template: { name: 'js/components/catalog/templates/ko-component-catalog-of-library', data: $root }"></div>
+<div data-bind="component: { name: 'catalog-component', data: $root }"></div>
 
 <div id="js_drag_item" class="drag_item"></div>
 
