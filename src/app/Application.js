@@ -30,16 +30,13 @@ define(['infrastructure', 'configurationSystem', 'templateSystem'], function(){
              * */
             start : function(){
 
-                require(['CatalogComponent'], function(){
+                $(document).ready(function(){
 
-                    $(document).ready(function(){
+                    window.ROOT = {
+                        catalogViewModel : ko.observable('')
+                    };
 
-                        window.ROOT = {
-                            catalogViewModel : ko.observable('')
-                        };
-
-                        ko.applyBindings(window.ROOT);
-                    });
+                    ko.applyBindings(window.ROOT);
                 });
             },
 

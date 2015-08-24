@@ -1,7 +1,6 @@
-define(['knockout', 'CatalogViewModel', '_'], function(ko, CatalogViewModel, _){
+define(['knockout', 'CatalogViewModel', '_', 'text!catalog-tree.html'], function(ko, CatalogViewModel, _, template){
 
-
-    var CatalogComponent = _.defineSubclass(CatalogViewModel, function CatalogComponent(params){
+    var CatalogComponent = _.defineSubclass(CatalogViewModel, function CatalogComponent(){
 
         var owner_id = 1;
 
@@ -24,11 +23,5 @@ define(['knockout', 'CatalogViewModel', '_'], function(ko, CatalogViewModel, _){
 
     });
 
-
-    ko.components.register('catalog-component', (function(){
-        return {
-            viewModel: CatalogComponent,
-            template: { require: 'text!apps/catalog/templates/catalog-component.html' }
-        }
-    }()));
+    return { viewModel: CatalogComponent, template: template }
 });

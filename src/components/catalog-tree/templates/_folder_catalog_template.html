@@ -37,14 +37,13 @@
             <!-- ko if: files -->
 
             <!-- ko foreach: childrens -->
-            <!-- ko template: { name: 'src/apps/catalog/templates/_folder_catalog_template', data: $data } -->
+            <!-- ko template: { name: 'src/components/catalog-tree/templates/_folder_catalog_template', data: $data } -->
             <!-- /ko -->
             <!-- /ko -->
 
             <!-- ko with: files -->
             <!-- ko foreach: models -->
             <li data-bind="css: { 'drag_moved' : isMoved }">
-
                 <div class="library_list" draggable="true" data-bind="
                     event: { dragstart: ondragstart, dragend: ondragend },
                     css: { 'drag_moving' : isMoving, 'selected' : isSelected },
@@ -56,11 +55,9 @@
                     </div>
 
                     <div class="folder_file_list">
-                        <!-- ko template: { name: 'src/apps/catalog/templates/_file_catalog_template', data: $data }--><!-- /ko -->
+                        <!-- ko template: { name: 'src/components/catalog-tree/templates/_file_catalog_template', data: $data }--><!-- /ko -->
                     </div>
-
                 </div>
-
             </li>
             <!-- /ko -->
             <!-- /ko -->

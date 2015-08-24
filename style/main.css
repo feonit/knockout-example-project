@@ -60,7 +60,7 @@ ul{
     width: 60px;
     height: 60px;
     background-repeat:no-repeat;
-    background-image:url('../image/camera.png');
+    background-image:url('../images/camera.png');
     background-size: cover;
     display: block;
 }
@@ -92,14 +92,14 @@ ul{
       width: 50px;
       height: 50px;
       background-color: red;
-      background: url(../image/opened.jpg);
+      background: url(../images/opened.jpg);
       background-size: 100%;
   }
 
   .closed_folder_ico{
       width: 50px;
       height: 50px;
-      background: url(../image/closed.jpg);
+      background: url(../images/closed.jpg);
       background-size: 100%;
   }
 

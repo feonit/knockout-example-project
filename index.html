@@ -2,15 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title></title>
-    <script async src="./lib/require.js" data-main="./src/manifest.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Example knockout application</title>
+    <script src="./src/app/require.config.js"></script>
+    <script data-main="app/startup" src="libs/require.js"></script>
     <link rel="stylesheet" type="text/css" href="./style/main.css" />
 </head>
-<body data-bind="with: $root ">
-
-<div data-bind="component: { name: 'catalog-component', data: $root }"></div>
-
-<div id="js_drag_item" class="drag_item"></div>
-
+<body>
+    <catalog-tree></catalog-tree>
+    <div id="js_drag_item" class="drag_item"></div>
 </body>
 </html>
