@@ -4,8 +4,7 @@
     css: { 'drag_taking': isTaking, 'no_drop': !mayTake(), 'selected' : isSelected(), 'drag_failed' : isFailed() }">
         <div class="check_selector">
             <!-- ko if: !isRoot() -->
-            <input id="file_01" class="none" type="checkbox" value="1" data-bind="attr: { id : 'file_' + $data.id(), value: id}, checked: isSelected ">
-            <!--<label for="file_01" class="checkbox_style no_text mid_align" data-bind="attr: { for : 'file_' + $data.id() }, click: onToggleSelectStateClick "></label>-->
+            <input id="file_01" type="checkbox" value="1" data-bind="attr: { id : 'file_' + $data.id(), value: id}, checked: isSelected ">
             <!-- /ko -->
 
             <!-- ko if: files() && files().isFetching() -->
@@ -16,7 +15,7 @@
 
         </div>
         <div class="folder_file_item">
-            <div class="big_icon_point closed_folder_ico" data-bind="click: $data.toggleIsOpenedState, css: isOpened() ? 'open_folder_ico' : 'closed_folder_ico' "></div>
+            <div class="big_icon_point glyphicon" data-bind="click: $data.toggleIsOpenedState, css: isOpened() ? 'glyphicon-folder-open' : 'glyphicon-folder-close' "></div>
         </div>
 
 
@@ -51,7 +50,6 @@
 
                     <div class="check_selector inside">
                         <input id="" class="none" type="checkbox" value="1" data-bind="attr: { id : 'file_' + $data.id(), value: id}, checked: isSelected ">
-                        <label for="" class="checkbox_style no_text mid_align" data-bind="attr: { for : 'file_' + $data.id() }"></label>
                     </div>
 
                     <div class="folder_file_list">

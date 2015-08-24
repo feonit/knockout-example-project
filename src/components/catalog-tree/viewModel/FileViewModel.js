@@ -47,7 +47,7 @@ define(['_', 'knockout', 'DragAndDropModel', 'FileModel', 'ItemCatalogViewModel'
         /** @lends FileViewModel.prototype */
         {
             getDocTypeClass : function () {
-
+                return 'glyphicon-camera'
             },
 
             addError : function (msg) {

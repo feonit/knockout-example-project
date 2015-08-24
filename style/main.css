@@ -16,13 +16,13 @@ ul{
 .check_selector {
     display: table-cell;
     vertical-align: middle;
-    width: 50px;
+    width: 18px;
 }
 
 .folder_file_item{
     display: table-cell;
     vertical-align: middle;
-    width: 100px;
+    width: 24px;
     cursor: pointer;
 }
 
@@ -34,23 +34,6 @@ ul{
 }
 .file_informations span {font-size:12px; word-wrap: break-word;}
 .file_informations a {width:auto;}
-
-
-
-.info_point {
-    width:32px;
-    height:38px;
-    background-position:center center;
-    background-repeat:no-repeat;
-    display:inline-block;
-    vertical-align:top;
-    text-decoration:none;
-    border-radius:3px;
-    position:relative;
-    -moz-user-select: none;
-    -khtml-user-select: none;
-    user-select: none;
-}
 
 .float_left {float:left;}
 
