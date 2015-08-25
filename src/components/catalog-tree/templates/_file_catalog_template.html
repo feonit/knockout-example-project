@@ -1,8 +1,9 @@
-<div class="library_list">
-    <div class="static_format float_left" >
-        <span class="glyphicon" data-bind="css: getDocTypeClass(), click: onClickOpenPreview"></span>
-    </div>
-    <div class="file_information">
-        <a class="file_name" href="javascript: void 0" data-bind="text: title, click: onClickOpenPreview">{{title}}</a>
-    </div>
+<div class="item_checkbox">
+    <input class="none" type="checkbox" value="1" data-bind="attr: { id : 'file_' + $data.id(), value: id}, checked: isSelected ">
+</div>
+<div class="item_icon">
+    <i class="glyphicon" data-bind="css: getDocTypeClass(), click: onClickOpenPreview"></i>
+</div>
+<div class="item_info">
+    <a class="" href="javascript: void 0" data-bind="text: title, click: onClickOpenPreview">{{title}}</a>
 </div>

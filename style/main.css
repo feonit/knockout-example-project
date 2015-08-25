@@ -1,5 +1,6 @@
 * {
     font-family: fantasy;
+    font-size: 24px;
 }
 
 ul{
@@ -13,78 +14,30 @@ ul{
     width: 100%;
 }
 
-.check_selector {
-    display: table-cell;
-    vertical-align: middle;
-    width: 18px;
+.item_checkbox {
+    width: 3%;
 }
 
-.folder_file_item{
+.item_icon{
     display: table-cell;
     vertical-align: middle;
-    width: 24px;
+    width: 6%;
     cursor: pointer;
 }
 
-.file_informations {
-    display: table-cell;
-    vertical-align: middle;
+.none{
+    display: none;
+}
+.item_info {
     text-align:left;
     white-space: nowrap;
 }
-.file_informations span {font-size:12px; word-wrap: break-word;}
-.file_informations a {width:auto;}
 
-.float_left {float:left;}
-
-
-.inside_image {
-    position:absolute;
-    width: 60px;
-    height: 60px;
-    background-repeat:no-repeat;
-    background-image:url('../images/camera.png');
-    background-size: cover;
-    display: block;
+.item_icon, .item_info, .item_checkbox{
+    display: table-cell;
+    vertical-align: middle;
 }
 
-.file_name {
-    display:block;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    font-size:14px;
-    line-height:14px;
-    padding:1px 0 3px 0;
-    margin-right:250px;
-}
-
-
-
-.checkbox_style {
-    height:20px;
-    display:inline-block;
-    padding:4px 0 0 36px;
-    vertical-align:middle;
-    position:relative;
-    cursor:pointer;
-} .checkbox_style.no_text {
-      padding:4px 0 0 24px;
-  }
-
-  .open_folder_ico{
-      width: 50px;
-      height: 50px;
-      background-color: red;
-      background: url(../images/opened.jpg);
-      background-size: 100%;
-  }
-
-  .closed_folder_ico{
-      width: 50px;
-      height: 50px;
-      background: url(../images/closed.jpg);
-      background-size: 100%;
-  }
 
 @-webkit-keyframes taken_elem {
     from { background-color: rgb(193, 226, 255)} to { background-color: inherit; }

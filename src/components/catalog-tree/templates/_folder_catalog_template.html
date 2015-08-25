@@ -2,7 +2,7 @@
     <div draggable="true" class="library_list" data-bind="
     event: { dragover: ondragover, dragleave: ondragleave, dragenter: ondragenter, drop: ondrop, dragstart: ondragstart, dragend: ondragend, click: onToggleSelectStateClick },
     css: { 'drag_taking': isTaking, 'no_drop': !mayTake(), 'selected' : isSelected(), 'drag_failed' : isFailed() }">
-        <div class="check_selector">
+        <div class="item_checkbox">
             <!-- ko if: !isRoot() -->
             <input id="file_01" type="checkbox" value="1" data-bind="attr: { id : 'file_' + $data.id(), value: id}, checked: isSelected ">
             <!-- /ko -->
@@ -14,12 +14,12 @@
             <!-- /ko -->
 
         </div>
-        <div class="folder_file_item">
+        <div class="item_icon">
             <div class="big_icon_point glyphicon" data-bind="click: $data.toggleIsOpenedState, css: isOpened() ? 'glyphicon-folder-open' : 'glyphicon-folder-close' "></div>
         </div>
 
 
-        <div class="file_informations">
+        <div class="item_info">
             <a class="folder_name" href="#" data-bind="text: $data.title()">Название папки</a>
         </div>
 
@@ -31,8 +31,7 @@
         <!-- /ko -->
 
         <!-- ko if: !isEmpty() -->
-        <ul class="inside_folder_ul" >
-
+        <ul>
             <!-- ko if: files -->
 
             <!-- ko foreach: childrens -->
@@ -48,13 +47,8 @@
                     css: { 'drag_moving' : isMoving, 'selected' : isSelected },
                     click: onToggleSelectStateClick ">
 
-                    <div class="check_selector inside">
-                        <input id="" class="none" type="checkbox" value="1" data-bind="attr: { id : 'file_' + $data.id(), value: id}, checked: isSelected ">
-                    </div>
+                    <!-- ko template: { name: 'src/components/catalog-tree/templates/_file_catalog_template', data: $data }--><!-- /ko -->
 
-                    <div class="folder_file_list">
-                        <!-- ko template: { name: 'src/components/catalog-tree/templates/_file_catalog_template', data: $data }--><!-- /ko -->
-                    </div>
                 </div>
             </li>
             <!-- /ko -->
