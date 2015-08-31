@@ -240,3 +240,7 @@ ul{
       padding:2px 0 0 0;
       text-align:center;
   }
+
+.b-bar-controls{
+    float: right;
+}

@@ -1,4 +1,4 @@
-define(['knockout', 'CatalogViewModel', '_', 'text!catalog-tree.html'], function(ko, CatalogViewModel, _, template){
+define(['knockout', 'CatalogViewModel', '_', 'text!catalog-tree.html', 'enterKey', 'escKey'], function(ko, CatalogViewModel, _, template){
 
     var CatalogComponent = _.defineSubclass(CatalogViewModel, function CatalogComponent(){
 

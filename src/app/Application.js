@@ -2,7 +2,7 @@
  * @module Application
  * @requires infrastructure
  * */
-define(['infrastructure', 'configurationSystem', 'templateSystem'], function(){
+define(['infrastructure', 'configurationSystem', 'templatingSystem'], function(){
 
     var Application = (function(window, document, $, ko){
 

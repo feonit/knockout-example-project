@@ -95,6 +95,20 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
              * */
             this.isRoot = ko.observable(this.nestingLevel() === 1);
 
+            /**
+             * @public
+             * @param {Function}
+             * @return {Boolean}
+             * */
+            this.isEditing = ko.observable(false);
+
+            /**
+             * @public
+             * @param {Function}
+             * @return {String}
+             * */
+            this.newTitle = ko.observable('');
+
             if (!this.isRoot()){
                 /** that param from {DragAndDrop} */
                 this.isSelected(this.parent().isSelected());
@@ -103,6 +117,70 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
 
         /** @lends FolderViewModel.prototype */
         {
+            /**
+             * Редактировать название
+             * @public
+             * */
+            onClickEditTitle: function(model, event){
+                event.stopPropagation();
+                this.isEditing(true);
+            },
+            /**
+             * Отменить редактирование имени
+             * @public
+             * */
+            onClickResetTitle : function(model, event){
+                event.stopPropagation();
+                this._resetForm();
+            },
+            /**
+             * Сохранить новое имя
+             * @public
+             * */
+            onClickSaveTitle : function(model, event){
+                event.stopPropagation();
+                this._confirmForm();
+            },
+            /**
+             * Обработчик клавиши Enter
+             * @public
+             * */
+            onEnterKeyDown: function(model, event){
+                event.stopPropagation();
+                this._confirmForm();
+            },
+            /**
+             * Обработчик клавиши Esc
+             * @public
+             * */
+            onEscKey: function(model, event){
+                event.stopPropagation();
+                this._resetForm();
+            },
+            /**
+             * @private
+             * */
+            _confirmForm: function(){
+                this._saveTitle();
+                this._resetForm();
+            },
+            /**
+             * @private
+             * */
+            _saveTitle: function(){
+                var newTitle = this.newTitle();
+
+                if(newTitle !== ''){
+                    this.title(newTitle);
+                }
+            },
+            /**
+             * @private
+             * */
+            _resetForm : function(){
+                this.newTitle('');
+                this.isEditing(false);
+            },
             /**
              * Opens or closes the folder
              * @this FolderViewModel
@@ -114,7 +192,6 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
                 switched ? this.open() : this.close();
                 event.stopPropagation();
             },
-
             /**
              * Gets the number of elements in the tree
              * @this FolderViewModel
@@ -138,7 +215,6 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
                 }, this);
                 return count;
             },
-
             /**
              * Include all elements of the state as the selected
              * @this FolderViewModel
@@ -147,7 +223,6 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
             selectAll: function(){
                 this._setSelectedState(true);
             },
-
             /**
              * Disable all selected elements
              * @this FolderViewModel
@@ -156,7 +231,6 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
             unselectAll: function(){
                 this._setSelectedState(false);
             },
-
             /**
              * Enable or disable the selection status of all child elements, depending on the state of the current folder
              * @this FolderViewModel
@@ -165,7 +239,6 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
             syncRecursivelyChildrensItemsChosen: function(){
                 this.isSelected() ? this.selectAll() : this.unselectAll();
             },
-
             /**
              *
              * @this FolderViewModel
@@ -190,7 +263,6 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
                 // начать рекурсию
                 controlParentFolder(folder);
             },
-
             /**
              * Sets the state selected
              * @this FolderViewModel
@@ -207,7 +279,6 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
                     file.isSelected(boolean);
                 }, this);
             },
-
             /**
              * Loads the data and opens the folder
              * @this FolderViewModel
@@ -229,7 +300,6 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
                     options.callback && options.callback();
                 }
             },
-
             /**
              * Close the folder
              * @this FolderViewModel

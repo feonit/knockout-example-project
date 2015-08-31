@@ -2,28 +2,36 @@
     <div draggable="true" class="library_list" data-bind="
     event: { dragover: ondragover, dragleave: ondragleave, dragenter: ondragenter, drop: ondrop, dragstart: ondragstart, dragend: ondragend, click: onToggleSelectStateClick },
     css: { 'drag_taking': isTaking, 'no_drop': !mayTake(), 'selected' : isSelected(), 'drag_failed' : isFailed() }">
+
+        <!-- ko if: !isEditing() -->
         <div class="item_checkbox">
             <!-- ko if: !isRoot() -->
             <input id="file_01" type="checkbox" value="1" data-bind="attr: { id : 'file_' + $data.id(), value: id}, checked: isSelected ">
             <!-- /ko -->
-
             <!-- ko if: files() && files().isFetching() -->
             <div class="preloader" style="margin: 0">
                 <span class="preloader_core"></span>
             </div>
             <!-- /ko -->
-
         </div>
         <div class="item_icon">
             <div class="big_icon_point glyphicon" data-bind="click: $data.toggleIsOpenedState, css: isOpened() ? 'glyphicon-folder-open' : 'glyphicon-folder-close' "></div>
         </div>
-
-
         <div class="item_info">
             <a class="folder_name" href="#" data-bind="text: $data.title()">Название папки</a>
         </div>
+        <div class="b-bar-controls">
+            <button class="glyphicon glyphicon-pencil" data-bind="click: onClickEditTitle"></button>
+        </div>
+        <!-- /ko -->
 
-
+        <!-- ko if: isEditing() -->
+        <label>
+            <input type="text" data-bind="value: newTitle, enterKey: onEnterKeyDown, escKey: onEscKey, hasFocus: isEditing() ">
+        </label>
+        <button class="glyphicon glyphicon-remove" data-bind="click: onClickResetTitle"></button>
+        <button class="glyphicon glyphicon-ok" data-bind="click: onClickSaveTitle"></button>
+        <!-- /ko -->
     </div>
     <div class="contents_of_folder" data-bind="css: { 'folder_is_open': isOpened() }">
         <!-- ko if: isEmpty() -->

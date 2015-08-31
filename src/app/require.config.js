@@ -34,7 +34,7 @@ require = {
 		View: 								'core/View',
 		CommunicationSystem: 				'systems/communication/CommunicationSystem',
 		configurationSystem: 				'systems/configuration/configuration',
-		templateSystem:						'systems/engine/templateSystem',
+		templatingSystem:					'systems/templating/templatingSystem',
 
 		/**
 		 * ui components (package for catalog-tree component)
@@ -47,7 +47,9 @@ require = {
 		FilesCollection: 					'components/catalog-tree/collection/FilesCollection',
 		ItemCatalogViewModel: 				'components/catalog-tree/viewModel/mixin/ItemCatalogViewModel',
 		FileModel: 							'components/catalog-tree/models/FileModel',
-		FolderModel: 						'components/catalog-tree/models/FolderModel'
+		FolderModel: 						'components/catalog-tree/models/FolderModel',
+		enterKey: 							'components/catalog-tree/bindings/enterKey',
+		escKey: 							'components/catalog-tree/bindings/escKey'
 	},
 
 	shim: {

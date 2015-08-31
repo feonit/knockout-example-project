@@ -12,9 +12,24 @@
 
 </head>
 <body>
-
+<style>
+    #drop-zone{
+        color: #5cb85c;
+        text-align: center;
+    }
+    #drop-zone_message{
+        height: 100px;
+        line-height: 100px;
+    }
+</style>
 <div class="container">
     <div data-bind="component: { name: 'catalog-tree' }"></div>
+
+
+    <p id="drop-zone" class="bg-success">
+        <i id="drop-zone_message" class="glyphicon glyphicon-upload">Upload file here</i>
+    </p>
+
     <div id="js_drag_item" class="drag_item none"></div>
 </div>
 
