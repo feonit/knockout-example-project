@@ -29,7 +29,7 @@ require = {
 		/**
 		 * core
 		 * */
-		_: 									'core/_',
+		_: 									'core/util',
 		Model: 								'core/Model',
 		View: 								'core/View',
 		CommunicationSystem: 				'systems/communication/CommunicationSystem',
