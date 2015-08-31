@@ -30,6 +30,8 @@ define(['infrastructure', 'configurationSystem', 'templatingSystem'], function()
              * */
             start : function(){
 
+                ko.amdTemplateEngine.defaultPath = 'knockout-example-project';
+
                 $(document).ready(function(){
 
                     window.ROOT = {

@@ -172,7 +172,7 @@ define(["knockout"], function(ko) {
         var engine = new ko.nativeTemplateEngine(),
             sources = {};
 
-        engine.defaultPath = "feonit";
+        engine.defaultPath = "/";
         engine.defaultSuffix = ".html";
         engine.defaultRequireTextPluginName = "text";
 
