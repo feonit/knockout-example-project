@@ -43,7 +43,7 @@
             <!-- ko if: files -->
 
             <!-- ko foreach: childrens -->
-            <!-- ko template: { name: 'src/components/catalog-tree/templates/_folder_catalog_template', data: $data } -->
+            <!-- ko template: { name: 'src/components/catalog-tree/templates/folder_catalog_template', data: $data } -->
             <!-- /ko -->
             <!-- /ko -->
 
@@ -55,7 +55,7 @@
                     css: { 'drag_moving' : isMoving, 'selected' : isSelected },
                     click: onToggleSelectStateClick ">
 
-                    <!-- ko template: { name: 'src/components/catalog-tree/templates/_file_catalog_template', data: $data }--><!-- /ko -->
+                    <!-- ko template: { name: 'src/components/catalog-tree/templates/file_catalog_template', data: $data }--><!-- /ko -->
 
                 </div>
             </li>
