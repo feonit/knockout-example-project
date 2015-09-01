@@ -144,27 +144,28 @@ define(['knockout'], function(ko){
         _createDragabbleElemView : function (event){
             var count = ROOT.catalogViewModel().getSelectedTotalItemsLength();
 
-            var $image = $('#js_drag_item');
+            var imageNode = document.getElementById('js_drag_item');
+            var bodyNode = document.body;
 
-            $image = $image.clone();
+            imageNode = imageNode.cloneNode(true);
 
-            $image.html('<span>' + count + '</span>');
+            imageNode.innerHTML = '<span>' + count + '</span>';
 
-            $image.removeClass('none');
+            imageNode.classList.remove('none');
 
-            // Добавляем $image на страницу
-            $('body').append($image);
+            // Добавляем imageNode на страницу
+            bodyNode.appendChild(imageNode);
 
-            // Устанавливаем $image в качестве картинки для перетаскивания
-            event.dataTransfer.setDragImage($image.get(0), $image.outerWidth(), $image.outerHeight());
+            // Устанавливаем imageNode в качестве картинки для перетаскивания
+            event.dataTransfer.setDragImage(imageNode, imageNode.offsetWidth, imageNode.offsetHeight);
 
-            // Удаляем $image через 1 милисекунду. Если удалить срзау,
-            // то вызов setDragImage произойдет до того как отрендерится $image
+            // Удаляем imageNode через 1 милисекунду. Если удалить срзау,
+            // то вызов setDragImage произойдет до того как отрендерится imageNode
             window.setTimeout(function() {
-                $image.remove();
+                imageNode.parentNode.removeChild(imageNode);
             }, 1);
 
-            return $image
+            return imageNode;
         },
         /**
          * Handler
@@ -181,20 +182,32 @@ define(['knockout'], function(ko){
 
             var data = ROOT.catalogViewModel().getDataOfMovingItems();
 
-            var $xhr = $.ajax({
-                url : 'some_url_for_save_change',
-                type: 'POST',
-                data: {
-                    move: {
-                        files_id: data.files,
-                        folders_id: data.folders
-                    },
-                    to: this.id()
-                }
-            });
 
-            // rename to done
-            $xhr.always(endProcessHandler);
+            var formatRequestData = {
+                move: {
+                    files_id: data.files,
+                    folders_id: data.folders
+                },
+                to: this.id()
+            };
+
+            this._sendData(formatRequestData, endProcessHandler);
+        },
+
+        /**
+         * @param {object} data — Format of request
+         * @param {function} callback — Handler of success response
+         * */
+        _sendData : function(data, callback){
+
+            fetch('some_url_for_save_change', {
+                method: 'post',
+                body: data
+            }).then( function(){ console.log('Request succeeded with JSON response', data);
+                callback();
+            }).catch( function(error) { console.log('Request failed', error);
+                callback();
+            });
         }
     };
 
@@ -221,7 +234,7 @@ define(['knockout'], function(ko){
         function _scroll(value){
             if (_scroll.timer) return;
 
-            var a = $('.middle_main_content');
+            var a = document.querySelector('.middle_main_content');
             _scroll.timer = setInterval(function(){
                 a.scrollTop( a.scrollTop() + (value ? 2 : -2))
             }, 10);
@@ -238,7 +251,7 @@ define(['knockout'], function(ko){
             if (_scroll.timer){
                 document.body.draggable = false;
                 _scroll.stop();
-                $(document.body).off('dragover');
+                document.body.removeEventListener('dragover');
             }
         }
 
@@ -247,8 +260,8 @@ define(['knockout'], function(ko){
 
             var CONST_OFFSET = 5;
 
-            $(document.body).on('dragover', function(event){
-                var height = $(window).height();
+            document.body.addEventListener('dragover', function(event){
+                var height = window.innerHeight;
 
                 var FrameTop = Math.round(height/CONST_OFFSET);
 

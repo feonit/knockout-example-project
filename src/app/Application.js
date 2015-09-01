@@ -4,7 +4,7 @@
  * */
 define(['infrastructure', 'configurationSystem', 'templatingSystem'], function(){
 
-    var Application = (function(window, document, $, ko){
+    var Application = (function(window, document, ko){
 
         /**
          * @class A class for instance of application
@@ -32,14 +32,17 @@ define(['infrastructure', 'configurationSystem', 'templatingSystem'], function()
 
                 ko.amdTemplateEngine.defaultPath = 'knockout-example-project';
 
-                $(document).ready(function(){
 
+                function onDocumentReady(event) {
                     window.ROOT = {
                         catalogViewModel : ko.observable('')
                     };
 
                     ko.applyBindings(window.ROOT);
-                });
+                }
+
+                onDocumentReady();
+
             },
 
             /**
@@ -53,7 +56,7 @@ define(['infrastructure', 'configurationSystem', 'templatingSystem'], function()
 
         return Application;
 
-    }(window, document, $, ko));
+    }(window, document, ko));
 
     return Application;
 });

@@ -14,7 +14,6 @@ require = {
 		 * infrastructure
 		 * */
 		knockout: 							'../libs/knockout',
-		jquery: 							'../libs/jquery',
 		'knockout.mapping': 				'../libs/knockout.mapping',
 		'text':								'../libs/require-text',
 		'mustache':							'../libs/mustache',
