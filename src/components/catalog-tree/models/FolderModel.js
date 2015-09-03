@@ -25,8 +25,13 @@ define(['_', 'Model', 'FilesCollection'], function(_, Model, FilesCollection){
         } ,
         /** @lends FileModel.prototype */
         {
-            read : function () {
+            createRequest : function () {
+                var xhr = new XMLHttpRequest();
 
+                setTimeout(function(){
+                    // xhr.done(); todo
+                }, 200);
+                return xhr;
             },
 
             update : function () {

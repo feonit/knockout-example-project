@@ -1,73 +1,20 @@
 /**
  * Created by Feonit on 13.07.15.
  */
-define(['knockout', '_', 'Model', 'FileViewModel', 'FolderViewModel'], function(ko, _, Model, FileViewModel, FolderViewModel){
+define([
+    'knockout', '_', 'translation', 'FolderViewModel', 'FileViewModel', 'CatalogModel'
+], function(ko, _, translation, FolderViewModel, FileViewModel, CatalogModel){
 
-    var directoryTreeData = {
-        id: 1,
-        title: 'Root',
-        childrens: [
-            {
-                id: Math.round(Math.random()*100000),
-                title: 'Folder 1',
-                parent: Math.round(Math.random()*100000),
-                childrens: []
-            },
-            {
-                id: Math.round(Math.random()*100000),
-                title: 'Folder 2',
-                childrens: [
-                    {
-                        id: Math.round(Math.random()*100000),
-                        parent: Math.round(Math.random()*100000),
-                        title: 'My Job',
-                        childrens: []
-                    }
-                ]
-            },
-            {
-                id: Math.round(Math.random()*100000),
-                title: 'Folder 3',
-                childrens: [
-                    {
-                        id: Math.round(Math.random()*100000),
-                        title: 'Folder 4',
-                        parent: Math.round(Math.random()*100000),
-                        childrens: [
-                            {
-                                id: Math.round(Math.random()*100000),
-                                title: 'Folder 5',
-                                parent: Math.round(Math.random()*100000),
-                                childrens: []
-                            }
-                        ]
-                    }
-                ]
-            }
-        ],
-        parent: null
-    };
-
-    var CatalogViewModel = _.defineSubclass(Model,
+    var CatalogViewModel = _.defineSubclass(CatalogModel,
         /**
-         * A constructor for Directory Tree view
+         * A constructor for Catalog Tree view
          * @class CatalogViewModel
          * @constructs CatalogViewModel
          * @extends Model
          * @param {Object} options — Optional Object with extra parameters (see below)
          * */
         function CatalogViewModel(options){
-            /**
-             * @const
-             * @private
-             * */
-            var MAX_LEVEL_NESTING = 3;
-
-            /**
-             * @param {Function} root folder
-             * @public
-             * */
-            this.rootFolder = ko.observable();
+            CatalogModel.apply(this, arguments);
 
             /**
              * Получить идентификатор владелеца каталога
@@ -75,7 +22,19 @@ define(['knockout', '_', 'Model', 'FileViewModel', 'FolderViewModel'], function(
              * @function
              * @return {number}
              * */
-            this.owner_id = ko.observable(options.owner_id);
+            this.userID = options.userID;
+
+            /**
+             * @param {Function} root folder
+             * @public
+             * */
+            this.rootFolder = ko.observable();
+
+            this.countOfAllFiles = ko.observable();
+
+            API_VirtualFileSystem = this;
+
+            this.isEnabledProcessTransfer = ko.observable(false);
 
             // поведение
             this.getSelectedTotalItemsLength = ko.pureComputed(function(){
@@ -90,21 +49,13 @@ define(['knockout', '_', 'Model', 'FileViewModel', 'FolderViewModel'], function(
         /** @lends CatalogViewModel.prototype */
         {
             /**
-             * Method for load data
-             * @public
-             * */
-            readRequest : function(){
-                this.parse(directoryTreeData);
-            },
-            /**
              * Method for parse data and create the tree
-             * @param {Object} directoryTreeData
+             * @param {Object} response
              * @public
              * */
-            parse : function(directoryTreeData){
-                var rootFolder = this._createRootFolder(directoryTreeData);
-
-                this.rootFolder( rootFolder );
+            parse : function(response){
+                this.rootFolder( this._createRootFolder(response.data) );
+                this.countOfAllFiles(response.count);
             },
             /**
              * Способ создания файла с предустановленным поведением
@@ -136,6 +87,8 @@ define(['knockout', '_', 'Model', 'FileViewModel', 'FolderViewModel'], function(
                     throw TypeError();
                 }
 
+                options.userID = this.userID;
+
                 var folder = new FolderViewModel(options);
 
                 folder.isSelected.subscribe(this._behaviorOnSelectChange, folder);
@@ -149,14 +102,14 @@ define(['knockout', '_', 'Model', 'FileViewModel', 'FolderViewModel'], function(
              * @return {FolderViewModel} Созданный экземпляр папки
              * */
             getNewEmptyFolder: function(){
-                var defaults = {
-                    id: Math.round(Math.random()*10000000000), // random
-                    title: 'Новая папка',
-                    ownerName: 'me',
-                    parent: this.rootFolder()
-                };
                 return new FolderViewModel({
-                    data: defaults
+                    data: {
+                        id: undefined,
+                        title: translation.newFolder,
+                        ownerName: 'me',
+                        parent: this.rootFolder(),
+                        deleted: false
+                    }
                 });
             },
             /**
@@ -165,8 +118,14 @@ define(['knockout', '_', 'Model', 'FileViewModel', 'FolderViewModel'], function(
              * */
             onClickCreateNewFolder: function(){
                 var folder = this.getNewEmptyFolder();
-                this.rootFolder().childrens.unshift(folder);
-                folder.openRenameForm();
+                var that = this;
+
+                var xhr = folder.createRequest();
+
+                xhr.done(function(){
+                    that.rootFolder().childrens.unshift(folder);
+                    folder.openRenameForm();
+                });
             },
             /**
              * Получение экземпляров всех выбранных файлов
@@ -302,8 +261,8 @@ define(['knockout', '_', 'Model', 'FileViewModel', 'FolderViewModel'], function(
                     item.parent(folder);
                 });
 
-                folder.childrens.pushAll(folders);
-                folder.files().models.pushAll(files);
+                folder.childrens.unshiftAll(folders);
+                folder.files().models.unshiftAll(files);
             },
             /**
              * Method for create root folder
@@ -311,8 +270,8 @@ define(['knockout', '_', 'Model', 'FileViewModel', 'FolderViewModel'], function(
              * @private
              * */
             _createRootFolder : function(folderRootData){
-                folderRootData.id = 1;
-                folderRootData.title = 'Root';
+                folderRootData.id = 0;
+                folderRootData.title = 'Корневая директория';
                 folderRootData.parent = null;
 
                 var rootFolder = this.createFolder({
@@ -336,13 +295,11 @@ define(['knockout', '_', 'Model', 'FileViewModel', 'FolderViewModel'], function(
 
                 var collectionChildrens = parentFolderData.childrens.map(function(data){
 
+                    data.parent = parentFolder;
+                    data.parent_id = parentFolderData.id;
+
                     var childFolder = this.createFolder({
-                        data : {
-                            id : data.id,
-                            title : data.title,
-                            parent: parentFolder,
-                            parent_id: parentFolderData.id
-                        }
+                        data : data
                     });
 
                     this._createFoldersReqursive(childFolder, data);
@@ -363,7 +320,7 @@ define(['knockout', '_', 'Model', 'FileViewModel', 'FolderViewModel'], function(
             /**
              * Поведение для только что выбранного элемента
              * @memberof FileSystem
-             * @this {FolderViewModel}
+             * @this {FileViewModel} or {FolderViewModel}
              * */
             _behaviorOnSelectChange : function(){
                 if (this._inprocess) return;

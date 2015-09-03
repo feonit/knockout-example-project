@@ -16,6 +16,7 @@ require = {
 		knockout: 							'../libs/knockout',
 		'knockout.mapping': 				'../libs/knockout.mapping',
 		'text':								'../libs/require-text',
+		'json':								'../libs/require-json',
 		'mustache':							'../libs/mustache',
 
 		/**
@@ -45,6 +46,7 @@ require = {
 		DragAndDropModel: 					'components/catalog-tree/viewModel/mixin/DragAndDropModel',
 		FilesCollection: 					'components/catalog-tree/collection/FilesCollection',
 		ItemCatalogViewModel: 				'components/catalog-tree/viewModel/mixin/ItemCatalogViewModel',
+		CatalogModel: 						'components/catalog-tree/models/CatalogModel',
 		FileModel: 							'components/catalog-tree/models/FileModel',
 		FolderModel: 						'components/catalog-tree/models/FolderModel',
 		enterKey: 							'components/catalog-tree/bindings/enterKey',

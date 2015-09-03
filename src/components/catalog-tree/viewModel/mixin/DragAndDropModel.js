@@ -34,7 +34,25 @@ define(['knockout'], function(ko){
     /** @lends DragAndDropModel.prototype */
     {
         constructor: DragAndDropModel,
-
+        /**
+         * Handler
+         * @public
+         * @param {Object} model
+         * @param {Event} event
+         * */
+        onToggleSelectStateClick : function(model, event){
+            this.isSelected(!this.isSelected());
+            event.stopImmediatePropagation();
+        },
+        /**
+         * Хранилище
+         * */
+        _storeData: {},
+        /**
+         * Режим вбрасывания файлов, при котором файлы либо скручиваются либо нет
+         * @value {String} NORMAL_STUFFING | QUICK_STUFFING
+         * */
+        mode: '',
         /**
          * Handler
          * @public
@@ -42,31 +60,52 @@ define(['knockout'], function(ko){
          * @param {Event} event
          * */
         ondragstart : function(model, event){
-            event.dataTransfer.effectAllowed = "move";
-            /**
-             * Fired on an element when a drag is started.
-             * */
-            if (ROOT.catalogViewModel().getSelectedTotalItemsLength() === 0){
-                return false;
+            var count = API_VirtualFileSystem.getSelectedTotalItemsLength();
+
+            this.mode = 'NORMAL_STUFFING';
+
+            if (count === 0){
+                // case: перетаскиваем всегда хотябы один элемент
+                model.isSelected(true);
             }
+            if (count === 0){
+                this.mode = 'QUICK_STUFFING';
+            }
+
+            // todo вынести отсюда обработку ошибок
+
+            API_VirtualFileSystem.setIsMovingAllSelectedItemsState(true);
+
+            event.dataTransfer.effectAllowed = "move";
             event.dataTransfer.setData(DragAndDropModel._MIME_TYPE, "fake data");
-            ROOT.catalogViewModel().setIsMovingAllSelectedItemsState(true);
+
             this._createDragabbleElemView(event);
-            DragAndDropModel._effectOnBodyScroll.start();
+
+            this._storeData.documentHandler = this._onDocumentDragover.bind(this);
+
+            document.addEventListener('dragover', this._storeData.documentHandler);
+
+            var that = this;
+
+            var _handlerOnOvercomeDistance = function(){
+                DragAndDropModel._effectOnBodyScroll.start();
+
+                if(that.mode === 'NORMAL_STUFFING'){
+                    setTimeout(function(){
+                        API_VirtualFileSystem.isEnabledProcessTransfer(true);
+                    }, 10);
+                }
+            };
+
+            this._saveCoordinates(event, _handlerOnOvercomeDistance);
+
             return true;
         },
-        /**
-         * Handler
-         * @public
-         * @param {Object} model
-         * @param {Event} event
-         * */
-        ondragend : function(model, event){
-            event.stopImmediatePropagation();
-            ROOT.catalogViewModel().setIsMovingAllSelectedItemsState(false); //1
-            event.dataTransfer.clearData(DragAndDropModel._MIME_TYPE);
-            DragAndDropModel._effectOnBodyScroll.stop();
+
+        ondrag: function(m, e){
+            console.log(e);
         },
+
         /**
          * Handler
          * @public
@@ -74,18 +113,10 @@ define(['knockout'], function(ko){
          * @param {Event} event
          * */
         ondragover : function(model, event){
-            //event.stopPropagation();
             this.isTaking(true);
-        },
-        /**
-         * Handler
-         * @public
-         * @param {Object} model
-         * @param {Event} event
-         * */
-        ondragleave : function(model, event){
-            event.stopImmediatePropagation();
-            this.isTaking(false);
+            // Чтобы до элемента дошло событие drop, нужно запретить передачу по цепочке события dragover
+            if (event.preventDefault) event.preventDefault();
+            return false;
         },
         /**
          * Handler
@@ -106,9 +137,16 @@ define(['knockout'], function(ko){
          * @param {Object} model
          * @param {Event} event
          * */
+        ondragleave : function(model, event){
+            this.isTaking(false);
+        },
+        /**
+         * Handler
+         * @public
+         * @param {Object} model
+         * @param {Event} event
+         * */
         ondrop : function(model, event){
-            event.stopImmediatePropagation();
-
             // reset state
             this.isTaking(false);
 
@@ -124,7 +162,7 @@ define(['knockout'], function(ko){
                 });
             } else {
                 this.isFailed(true);
-                return false
+                return false;
             }
         },
         /**
@@ -133,16 +171,79 @@ define(['knockout'], function(ko){
          * @param {Object} model
          * @param {Event} event
          * */
-        onToggleSelectStateClick : function(model, event){
-            this.isSelected(!this.isSelected());
-            event.stopImmediatePropagation();
+        ondragend : function(model, event){
+            if(this.mode === 'QUICK_STUFFING'){
+                model.isSelected(false);
+                model.isMoving(false);
+            }
+
+            if(this.mode === 'NORMAL_STUFFING'){
+                API_VirtualFileSystem.setIsMovingAllSelectedItemsState(false); //1
+                API_VirtualFileSystem.isEnabledProcessTransfer(false);
+            }
+
+            // очистка данных...
+            event.dataTransfer.clearData(DragAndDropModel._MIME_TYPE);
+
+            // выключить скролл эффект
+            DragAndDropModel._effectOnBodyScroll.stop();
+
+            // выключить отслеживание курсора
+            document.removeEventListener('mousemove', this._storeData.documentHandler);
+
+            // очистить хранилище
+            this._clearStore();
+        },
+        /**
+         * Запоминаем координаты и обработчик
+         * */
+        _saveCoordinates: function(event, handler){
+            this._storeData.firstX = event.pageX;
+            this._storeData.firstY = event.pageY;
+            this._storeData.handler = handler;
+        },
+        /**
+         * Проверяем, превышено ли ограничение при меремещении
+         * */
+        _isOvercomeDistanceBarrier: function (){
+            var STEP_PX = 100,
+                height = Math.abs(this._storeData.firstX - this._storeData.currentX),
+                width = Math.abs(this._storeData.firstY - this._storeData.currentY),
+                passed = Math.floor(Math.sqrt(height*height + width*width));
+
+            return STEP_PX < passed;
+        },
+        /**
+         * Очищаем хранилище
+         * */
+        _clearStore: function(){
+            this._storeData = {};
+        },
+        /**
+         * Отслеживает движения мыши по документу, сохраняет текущее положение, и проверяет
+         * превышен ли барьер, если превышен, вызывает обработчик
+         * */
+        _onDocumentDragover: function(event){
+            this._storeData.currentX = event.pageX;
+            this._storeData.currentY = event.pageY;
+
+            if ( !this._storeData.isAllow ){
+                this._storeData.isAllow = this._isOvercomeDistanceBarrier(event);
+
+                // only one time
+                if ( this._storeData.isAllow ){
+                    if ( this._storeData.handler ){
+                        this._storeData.handler();
+                    }
+                }
+            }
         },
         /**
          * Handler
          * @private
          * */
         _createDragabbleElemView : function (event){
-            var count = ROOT.catalogViewModel().getSelectedTotalItemsLength();
+            var count = API_VirtualFileSystem.getSelectedTotalItemsLength();
 
             var imageNode = document.getElementById('js_drag_item');
             var bodyNode = document.body;
@@ -174,43 +275,15 @@ define(['knockout'], function(ko){
         _dropData : function (){
             var that = this;
 
-            function endProcessHandler(){
-                ROOT.catalogViewModel().moveSelectedToFolder(that);               // 1
-                ROOT.catalogViewModel().setIsMovedAllSelectedItemsState(true);    // 2
-                ROOT.catalogViewModel().unselectAll();                            // 3
+            function callback(){
+                API_VirtualFileSystem.moveSelectedToFolder(that);
+                API_VirtualFileSystem.setIsMovedAllSelectedItemsState(true);
+                API_VirtualFileSystem.unselectAll();
             }
 
-            var data = ROOT.catalogViewModel().getDataOfMovingItems();
-
-
-            var formatRequestData = {
-                move: {
-                    files_id: data.files,
-                    folders_id: data.folders
-                },
-                to: this.id()
-            };
-
-            this._sendData(formatRequestData, endProcessHandler);
-        },
-
-        /**
-         * @param {object} data — Format of request
-         * @param {function} callback — Handler of success response
-         * */
-        _sendData : function(data, callback){
-
-            fetch('some_url_for_save_change', {
-                method: 'post',
-                body: data
-            }).then( function(){ console.log('Request succeeded with JSON response', data);
-                callback();
-            }).catch( function(error) { console.log('Request failed', error);
-                callback();
-            });
+            API_VirtualFileSystem.updateRequest(this, callback);
         }
     };
-
     /**
      * @memberof DragAndDropModel
      * @param {String} string
@@ -228,55 +301,31 @@ define(['knockout'], function(ko){
 
     DragAndDropModel._effectOnBodyScroll = (function(){
 
-        /**
-         * @param {Boolean} value top or bottom
-         * */
-        function _scroll(value){
-            if (_scroll.timer) return;
-
-            var a = document.querySelector('.middle_main_content');
-            _scroll.timer = setInterval(function(){
-                a.scrollTop( a.scrollTop() + (value ? 2 : -2))
-            }, 10);
+        function destroy(){
+            document.body.draggable = false;
+            document.removeEventListener('dragover', _scrolling);
         }
 
-        _scroll.stop = function(){
-            if (_scroll.timer){
-                clearInterval(_scroll.timer);
-                delete _scroll.timer;
-            }
-        };
+        function _scrolling(event){
+            var CONST_OFFSET = 5;
 
-        function destroy(){
-            if (_scroll.timer){
-                document.body.draggable = false;
-                _scroll.stop();
-                document.body.removeEventListener('dragover');
+            var a = document.body;
+            var height = window.innerHeight;
+            var FrameTop = Math.round(height/CONST_OFFSET);
+
+            if (event.pageY < FrameTop){
+                a.scrollTop = ( a.scrollTop - 2);
+            }
+
+            if (event.pageY > (CONST_OFFSET-1)*FrameTop){
+                a.scrollTop = ( a.scrollTop + 2);
             }
         }
 
         function bindEventHandler(){
             document.body.draggable = true;
 
-            var CONST_OFFSET = 5;
-
-            document.body.addEventListener('dragover', function(event){
-                var height = window.innerHeight;
-
-                var FrameTop = Math.round(height/CONST_OFFSET);
-
-                if (event.pageY < FrameTop){
-                    _scroll(false);
-                }
-
-                if (event.pageY > FrameTop && event.pageY < (CONST_OFFSET-1)*FrameTop){
-                    _scroll.stop();
-                }
-
-                if (event.pageY > (CONST_OFFSET-1)*FrameTop){
-                    _scroll(true);
-                }
-            });
+            document.addEventListener('dragover', _scrolling);
         }
 
         return {

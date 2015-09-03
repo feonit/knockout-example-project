@@ -1,0 +1,48 @@
+{
+    "data": {
+        "id": 1,
+        "title": "Folder 1 (Root)",
+        "parent": null,
+        "childrens": [
+            {
+                "id": 2,
+                "title": "Folder 2",
+                "parent": 1,
+                "childrens": []
+            },
+            {
+                "id": 3,
+                "title": "Folder 3",
+                "parent": 1,
+                "childrens": [
+                    {
+                        "id": 4,
+                        "parent": 3,
+                        "title": "Folder 4",
+                        "childrens": []
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "title": "Folder 5",
+                "parent": 1,
+                "childrens": [
+                    {
+                        "id": 6,
+                        "title": "Folder 6",
+                        "parent": 5,
+                        "childrens": [
+                            {
+                                "id": 7,
+                                "title": "Folder 7",
+                                "parent": 6,
+                                "childrens": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

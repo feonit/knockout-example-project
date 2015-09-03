@@ -2,9 +2,9 @@ define(['knockout', 'CatalogViewModel', '_', 'text!catalog-tree.html', 'enterKey
 
     var CatalogComponent = _.defineSubclass(CatalogViewModel, function CatalogComponent(){
 
-        var owner_id = 1;
+        var userID = 1;
 
-        CatalogViewModel.call(this, { owner_id: owner_id} );
+        CatalogViewModel.call(this, { userID: userID} );
 
         this.prototype = {}; // ko build instance of component with undefined proto?
 
