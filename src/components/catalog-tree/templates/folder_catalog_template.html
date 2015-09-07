@@ -53,7 +53,7 @@
             <!-- ko with: files -->
             <!-- ko foreach: models -->
             <li data-bind="css: { 'drag_moved' : isMoved }">
-                <div class="library_list" draggable="true" data-bind="
+                <div class="library_list library_list-file" draggable="true" data-bind="
                     event: { dragstart: ondragstart, dragend: ondragend },
                     css: { 'drag_moving' : isMoving, 'selected' : isSelected }">
 

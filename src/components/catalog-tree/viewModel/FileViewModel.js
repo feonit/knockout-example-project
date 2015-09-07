@@ -44,10 +44,6 @@ define(['_', 'knockout', 'FileModel', 'DragAndDropModel', 'ItemCatalogViewModel'
 
             // from DragAndDropModel (set state)
             this.isSelected(this.parent().isSelected());
-
-            this.isSelected.subscribe(function(){
-                console.log(arguments)
-            })
         } ,
 
         /** @lends FileViewModel.prototype */
