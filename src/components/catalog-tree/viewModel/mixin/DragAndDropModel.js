@@ -11,99 +11,173 @@ define(['knockout'], function(ko){
      * @constructs DragAndDropModel
      * */
     function DragAndDropModel(){
-
-        // only for folders
-        this.isTaking = ko.observable(false);
-        this.isTaken = ko.observable(false);
-        this.isFailed = ko.observable();
-
-        // folders and files
+        /**
+         * Элемент в состоянии перемещения
+         * */
         this.isMoving = ko.observable(false);
+        /**
+         * Элемент завершил перемещение
+         * */
         this.isMoved = ko.observable(false);
+        /**
+         * Элемент активен
+         * */
         this.isSelected = ko.observable(false);
-
-        this.containsInSelectedFolder = ko.observable(false);
-
-        // если папка выбрана, она не может уже быть приемником, это поведение постоянно (задача - исключить выбранные папки и все дочерние из возможных приемников)
-        this.mayTake = ko.computed(function(){
-            return !this.isSelected();
-        }, this);
     }
+
+    var API = {
+        dropToFolder : function (folder){
+            API_VirtualFileSystem.updateRequest(folder, function (){
+                API_VirtualFileSystem.moveSelectedToFolder(folder);
+                API_VirtualFileSystem.setIsMovedAllSelectedItemsState(true);
+                API_VirtualFileSystem.unselectAll();
+            });
+        },
+        getSelectedCount : function(){
+            return API_VirtualFileSystem.getSelectedTotalItemsLength();
+        },
+        setStateProcess : function(state){
+            API_VirtualFileSystem.isEnabledProcessTransfer(state);
+        },
+        setCounter : function(value){
+            API_VirtualFileSystem.distancePercent(value);
+        },
+        setAllMoivingState : function(boolean){
+            API_VirtualFileSystem.setIsMovingAllSelectedItemsState(boolean);
+        }
+    };
 
     DragAndDropModel.prototype =
     /** @lends DragAndDropModel.prototype */
     {
         constructor: DragAndDropModel,
         /**
-         * Handler
-         * @public
-         * @param {Object} model
-         * @param {Event} event
-         * */
-        onToggleSelectStateClick : function(model, event){
-            this.isSelected(!this.isSelected());
-            event.stopImmediatePropagation();
-        },
-        /**
          * Хранилище
          * */
         _storeData: {},
         /**
+         * Очищаем хранилище
+         * */
+        _clearStore: function(){
+            // точка отсчета
+            this._storeData.firstX = 0;
+            this._storeData.firstY = 0;
+
+            // текущая точка
+            this._storeData.currentX = 0;
+            this._storeData.currentY = 0;
+
+            // пройдено ли растояние
+            this._storeData.isAllow = false;
+        },
+        /**
          * Режим вбрасывания файлов, при котором файлы либо скручиваются либо нет
          * @value {String} NORMAL_STUFFING | QUICK_STUFFING
          * */
-        mode: '',
+        mode: ko.observable(),
         /**
          * Handler
          * @public
          * @param {Object} model
          * @param {Event} event
          * */
-        ondragstart : function(model, event){
-            var count = API_VirtualFileSystem.getSelectedTotalItemsLength();
+        ondragstart : function(model, event){  if (event.originalEvent) event = event.originalEvent;
+            var that = this;
 
-            this.mode = 'NORMAL_STUFFING';
+            /**
+             * Отслеживает движения мыши по документу, сохраняет текущее положение, и проверяет
+             * превышен ли порог при меремещении, если превышен, вызывает обработчик после прохождения порога
+             * @param {Event} event — Событие с текущеми координатами
+             * */
+            function beforePassing(event){
+                if ( !that._storeData.isAllow ){
+                    var testing = getStateMovement(event);
+
+                    // запоминаем результат
+                    that._storeData.isAllow = testing.isPassed;
+
+                    // публикуем пройденное расстояние для обычного режима
+                    if(that.mode() === 'NORMAL_STUFFING'){
+                        API.setCounter(testing.percent);
+                    }
+
+                    if ( testing.isPassed ){
+                        afterPassing();
+                    }
+                }
+            }
+            /**
+             * Проверяем, превышен ли порог при меремещении
+             * @param {Event} event — Событие с текущеми координатами
+             * */
+            function getStateMovement(event){
+                var firstX = that._storeData.firstX,
+                    firstY = that._storeData.firstY,
+                    currentX = event.clientX,
+                    currentY = event.clientY,
+                    STEP_PX = 200,
+                    shiftX,
+                    shiftY,
+                    passed,
+                    percent;
+
+                if (!firstX || !firstY || !currentX || !currentY)
+                    return false;
+
+                shiftX = Math.abs(firstX - currentX);
+                shiftY = Math.abs(firstY - currentY);
+                passed = Math.floor(Math.sqrt(shiftY*shiftY + shiftX*shiftX));
+                percent = Math.floor((passed / STEP_PX) * 100);
+
+                return {
+                    isPassed: STEP_PX < passed,
+                    percent: percent > 100 ? 100 : percent
+                }
+            }
+            /**
+             * После прохождения порога
+             * */
+            function afterPassing(){
+                DragAndDropModel._effectOnBodyScroll.start();
+                if(that.mode() === 'NORMAL_STUFFING'){
+                    that._saveTopScrollPosition();
+                    setTimeout(function(){
+                        API.setStateProcess(true);
+                    }, 10);
+                }
+            }
+
+
+            var count = API.getSelectedCount();
+
+            this._clearStore();
+
+            // ставим режим обычного переноса
+            this.mode('NORMAL_STUFFING');
 
             if (count === 0){
                 // case: перетаскиваем всегда хотябы один элемент
                 model.isSelected(true);
-            }
-            if (count === 0){
-                this.mode = 'QUICK_STUFFING';
+
+                // режим быстрого переноса
+                this.mode('QUICK_STUFFING');
             }
 
-            // todo вынести отсюда обработку ошибок
-
-            API_VirtualFileSystem.setIsMovingAllSelectedItemsState(true);
+            API.setAllMoivingState(true);
 
             event.dataTransfer.effectAllowed = "move";
             event.dataTransfer.setData(DragAndDropModel._MIME_TYPE, "fake data");
 
-            this._createDragabbleElemView(event);
 
-            this._storeData.documentHandler = this._onDocumentDragover.bind(this);
+            this._storeData.documentHandler = beforePassing;
+
+            this._storeData.firstX = event.clientX;
+            this._storeData.firstY = event.clientY;
+            this._createDragabbleElemView(event);
 
             document.addEventListener('dragover', this._storeData.documentHandler);
 
-            var that = this;
-
-            var _handlerOnOvercomeDistance = function(){
-                DragAndDropModel._effectOnBodyScroll.start();
-
-                if(that.mode === 'NORMAL_STUFFING'){
-                    setTimeout(function(){
-                        API_VirtualFileSystem.isEnabledProcessTransfer(true);
-                    }, 10);
-                }
-            };
-
-            this._saveCoordinates(event, _handlerOnOvercomeDistance);
-
             return true;
-        },
-
-        ondrag: function(m, e){
-            console.log(e);
         },
 
         /**
@@ -112,7 +186,69 @@ define(['knockout'], function(ko){
          * @param {Object} model
          * @param {Event} event
          * */
-        ondragover : function(model, event){
+        ondragend : function(model, event){  if (event.originalEvent) event = event.originalEvent;
+            if(this.mode() === 'QUICK_STUFFING'){
+                //model.isSelected(false);
+                model.isMoving(false);
+            }
+
+            if(this.mode() === 'NORMAL_STUFFING'){
+                API.setAllMoivingState(false);
+                API.setStateProcess(false);
+
+                var TIME_CSS = 200;
+
+                setTimeout(function(){
+                    this._restoreTopScrollPosition();
+                }.bind(this), TIME_CSS);
+            }
+
+            // очистка данных...
+            event.dataTransfer.clearData(DragAndDropModel._MIME_TYPE);
+
+            // выключить скролл эффект
+            DragAndDropModel._effectOnBodyScroll.stop();
+
+            // выключить отслеживание курсора
+            document.removeEventListener('dragover', this._storeData.documentHandler);
+
+            // возвращаем счетчик
+
+            API.setCounter(0);
+        },
+
+
+        topScrollPosition: undefined,
+
+        _saveTopScrollPosition: function(){
+            var content = document.querySelector('.middle_main_content');
+            this.topScrollPosition = content.scrollTop;
+        },
+
+        _restoreTopScrollPosition: function(){
+            var content = document.querySelector('.middle_main_content'),
+                currentScrollTop = content.scrollTop,
+                savedScrollTop = this.topScrollPosition,
+                dirrect = currentScrollTop > savedScrollTop;
+
+            function nextStepScrollTop(){
+                currentScrollTop += (dirrect ? -10 : 10);
+                content.scrollTop = currentScrollTop;
+            }
+
+            var id = setInterval(function(){
+                Math.abs(currentScrollTop - savedScrollTop) > 11
+                    ? nextStepScrollTop()
+                    : clearInterval(id);
+            }, 10);
+        },
+        /**
+         * Handler
+         * @public
+         * @param {Object} model
+         * @param {Event} event
+         * */
+        ondragover : function(model, event){  if (event.originalEvent) event = event.originalEvent;
             this.isTaking(true);
             // Чтобы до элемента дошло событие drop, нужно запретить передачу по цепочке события dragover
             if (event.preventDefault) event.preventDefault();
@@ -124,7 +260,7 @@ define(['knockout'], function(ko){
          * @param {Object} model
          * @param {Event} event
          * */
-        ondragenter : function(model, event){
+        ondragenter : function(model, event){  if (event.originalEvent) event = event.originalEvent;
             event.dataTransfer.dropEffect  = 'copy';
             this.isTaken(false); // для рестарта эффекта
             if (this.mayTake()){
@@ -143,115 +279,36 @@ define(['knockout'], function(ko){
         /**
          * Handler
          * @public
-         * @param {Object} model
+         * @param {Object} folder
          * @param {Event} event
          * */
-        ondrop : function(model, event){
+        ondrop : function(folder, event){
             // reset state
             this.isTaking(false);
 
             // if available for taking
             if (this.mayTake()) {
-                this.isTaken(true);
-
-                var that = this;
                 this.open({
                     callback: function(){
-                        that._dropData(event);
-                    }
+                        this.isTaken(true);
+                        API.dropToFolder(folder);
+                    }.bind(this)
                 });
             } else {
-                this.isFailed(true);
                 return false;
             }
         },
         /**
-         * Handler
-         * @public
-         * @param {Object} model
-         * @param {Event} event
-         * */
-        ondragend : function(model, event){
-            if(this.mode === 'QUICK_STUFFING'){
-                model.isSelected(false);
-                model.isMoving(false);
-            }
-
-            if(this.mode === 'NORMAL_STUFFING'){
-                API_VirtualFileSystem.setIsMovingAllSelectedItemsState(false); //1
-                API_VirtualFileSystem.isEnabledProcessTransfer(false);
-            }
-
-            // очистка данных...
-            event.dataTransfer.clearData(DragAndDropModel._MIME_TYPE);
-
-            // выключить скролл эффект
-            DragAndDropModel._effectOnBodyScroll.stop();
-
-            // выключить отслеживание курсора
-            document.removeEventListener('mousemove', this._storeData.documentHandler);
-
-            // очистить хранилище
-            this._clearStore();
-        },
-        /**
-         * Запоминаем координаты и обработчик
-         * */
-        _saveCoordinates: function(event, handler){
-            this._storeData.firstX = event.pageX;
-            this._storeData.firstY = event.pageY;
-            this._storeData.handler = handler;
-        },
-        /**
-         * Проверяем, превышено ли ограничение при меремещении
-         * */
-        _isOvercomeDistanceBarrier: function (){
-            var STEP_PX = 100,
-                height = Math.abs(this._storeData.firstX - this._storeData.currentX),
-                width = Math.abs(this._storeData.firstY - this._storeData.currentY),
-                passed = Math.floor(Math.sqrt(height*height + width*width));
-
-            return STEP_PX < passed;
-        },
-        /**
-         * Очищаем хранилище
-         * */
-        _clearStore: function(){
-            this._storeData = {};
-        },
-        /**
-         * Отслеживает движения мыши по документу, сохраняет текущее положение, и проверяет
-         * превышен ли барьер, если превышен, вызывает обработчик
-         * */
-        _onDocumentDragover: function(event){
-            this._storeData.currentX = event.pageX;
-            this._storeData.currentY = event.pageY;
-
-            if ( !this._storeData.isAllow ){
-                this._storeData.isAllow = this._isOvercomeDistanceBarrier(event);
-
-                // only one time
-                if ( this._storeData.isAllow ){
-                    if ( this._storeData.handler ){
-                        this._storeData.handler();
-                    }
-                }
-            }
-        },
-        /**
-         * Handler
-         * @private
+         * Создает перетаскиваемый элемент
          * */
         _createDragabbleElemView : function (event){
-            var count = API_VirtualFileSystem.getSelectedTotalItemsLength();
+            var count = API.getSelectedCount();
 
             var imageNode = document.getElementById('js_drag_item');
             var bodyNode = document.body;
 
             imageNode = imageNode.cloneNode(true);
-
             imageNode.innerHTML = '<span>' + count + '</span>';
-
             imageNode.classList.remove('none');
 
             // Добавляем imageNode на страницу
@@ -267,36 +324,7 @@ define(['knockout'], function(ko){
             }, 1);
 
             return imageNode;
-        },
-        /**
-         * Handler
-         * @private
-         * */
-        _dropData : function (){
-            var that = this;
-
-            function callback(){
-                API_VirtualFileSystem.moveSelectedToFolder(that);
-                API_VirtualFileSystem.setIsMovedAllSelectedItemsState(true);
-                API_VirtualFileSystem.unselectAll();
-            }
-
-            API_VirtualFileSystem.updateRequest(this, callback);
         }
-    };
-    /**
-     * @memberof DragAndDropModel
-     * @param {String} string
-     */
-    DragAndDropModel._serializationData = function(numbers){
-        return JSON.stringify(numbers);
-    };
-    /**
-     * @memberof DragAndDropModel
-     * @param {String} string
-     */
-    DragAndDropModel._deserializationData = function(string){
-        return JSON.parse(string);
     };
 
     DragAndDropModel._effectOnBodyScroll = (function(){
@@ -309,22 +337,21 @@ define(['knockout'], function(ko){
         function _scrolling(event){
             var CONST_OFFSET = 5;
 
-            var a = document.body;
+            var a = document.querySelector('.middle_main_content');
             var height = window.innerHeight;
             var FrameTop = Math.round(height/CONST_OFFSET);
 
             if (event.pageY < FrameTop){
-                a.scrollTop = ( a.scrollTop - 2);
+                a.scrollTop =  a.scrollTop - 2;
             }
 
             if (event.pageY > (CONST_OFFSET-1)*FrameTop){
-                a.scrollTop = ( a.scrollTop + 2);
+                a.scrollTop =  a.scrollTop + 2;
             }
         }
 
         function bindEventHandler(){
             document.body.draggable = true;
-
             document.addEventListener('dragover', _scrolling);
         }
 

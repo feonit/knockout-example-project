@@ -2,8 +2,8 @@
  * Created by Feonit on 13.07.15.
  */
 
-define(['_', 'knockout', 'DragAndDropModel', 'FileModel', 'ItemCatalogViewModel'], function(
-    _, ko, DragAndDropModel, FileModel, ItemCatalogViewModel){
+define(['_', 'knockout', 'FileModel', 'DragAndDropModel', 'ItemCatalogViewModel', 'EditTitleFormModel'], function(
+    _, ko, FileModel, DragAndDropModel, ItemCatalogViewModel, EditTitleFormModel){
 
     var FileViewModel = _.defineSubclass(FileModel,
 
@@ -17,6 +17,7 @@ define(['_', 'knockout', 'DragAndDropModel', 'FileModel', 'ItemCatalogViewModel'
          * @extends FileModel
          * @extends DragAndDropModel
          * @extends ItemCatalogViewModel
+         * @extends EditTitleFormModel
          * */
         function FileViewModel(options){
             options = options || {};
@@ -25,6 +26,7 @@ define(['_', 'knockout', 'DragAndDropModel', 'FileModel', 'ItemCatalogViewModel'
 
             FileModel.call(this, options.data);
             DragAndDropModel.apply(this);
+            EditTitleFormModel.apply(this);
 
             this.errorMsg = ko.observable("Произошла ошибка при загрузке файла, возможно, файл уже был загружен");
             this.isCanceled = ko.observable(false);
@@ -42,6 +44,10 @@ define(['_', 'knockout', 'DragAndDropModel', 'FileModel', 'ItemCatalogViewModel'
 
             // from DragAndDropModel (set state)
             this.isSelected(this.parent().isSelected());
+
+            this.isSelected.subscribe(function(){
+                console.log(arguments)
+            })
         } ,
 
         /** @lends FileViewModel.prototype */
@@ -50,26 +56,7 @@ define(['_', 'knockout', 'DragAndDropModel', 'FileModel', 'ItemCatalogViewModel'
                 return 'glyphicon-camera'
             },
 
-            addError : function (msg) {
-
-            },
-
-            cancel : function () {
-
-            },
-
-            onClickCopyToMyLibrary: function(model, event){
-
-            },
-
-            onClickDownload :  function () {
-            },
-
-            onClickOpenPreview : function (model, event) {
-
-            },
-
-            _removeFile : function() {
+            onClickOpenPreview: function(){
 
             }
         }
@@ -77,6 +64,7 @@ define(['_', 'knockout', 'DragAndDropModel', 'FileModel', 'ItemCatalogViewModel'
 
     _.mix(FileViewModel.prototype, DragAndDropModel.prototype);
     _.mix(FileViewModel.prototype, ItemCatalogViewModel.prototype);
+    _.mix(FileViewModel.prototype, EditTitleFormModel.prototype);
 
     return FileViewModel;
 });

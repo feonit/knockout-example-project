@@ -13,17 +13,17 @@ define(['_', 'knockout', 'CommunicationSystem', 'knockout.mapping'], function(_,
          * */
         function Model(attributes){
             this.id = ko.observable();
-            this._setAttributes(attributes);
+            this.setAttributes(attributes);
         },
         /** @lends Model.prototype */
         {
             constructor: Model,
             /**
              * Способ установки начальных значений для атрибутов модели
-             * @private
+             * @public
              * @param {Object} attributes - The attributes for an instance
              * */
-            _setAttributes: function(attributes){
+            setAttributes: function(attributes){
                 ko.mapping.fromJS(attributes, {}, this);
             },
 
@@ -68,7 +68,7 @@ define(['_', 'knockout', 'CommunicationSystem', 'knockout.mapping'], function(_,
                 throw new Error('must be implemented by subclass!');
             },
             isNew: function(){
-                return !!this.id();
+                return !this.id();
             }
         }
     );

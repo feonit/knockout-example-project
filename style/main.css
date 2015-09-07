@@ -147,19 +147,6 @@ ul{
     -o-animation: moved_elem 1s ease-in;
     animation: moved_elem 1s ease-in;
 }
-.drag_failed{
-    -webkit-animation: fail_elem 1s ease-in;
-    -moz-animation: fail_elem 1s ease-in;
-    -o-animation: fail_elem 1s ease-in;
-    animation: fail_elem 1s ease-in;
-}
-
-.drag_failed:after {
-    content: 'Нельзя перекинуть папку саму в себя';
-    color: red;
-    opacity: .7;
-}
-
 [draggable] {
     -moz-user-select: none;
     -khtml-user-select: none;

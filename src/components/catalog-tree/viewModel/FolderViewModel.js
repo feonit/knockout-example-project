@@ -2,8 +2,8 @@
  * Created by Feonit on 13.07.15.
  */
 
-define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogViewModel', 'FolderModel'], function(
-    _, ko, DragAndDropModel, FilesCollection, ItemCatalogViewModel, FolderModel){
+define(['_', 'knockout', 'DragAndDropModel', 'ItemCatalogViewModel', 'FolderModel'], function(
+    _, ko, DragAndDropModel, ItemCatalogViewModel, FolderModel){
 
     "use strict";
 
@@ -24,6 +24,8 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
             DragAndDropModel.apply(this);
             ItemCatalogViewModel.apply(this);
 
+            var MAX_NESTING_LEVEL = 3;
+
             /**
              * @public
              * @param {Function}
@@ -37,29 +39,27 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
              * */
             this.renamed = ko.observable(false);
             /**
-             * @public
-             * @param {Function}
-             * @return {Boolean}
+             * Папка готова принять элемент
              * */
-            this.isEmpty = ko.computed(function(){
-                return !this.getTotalItemsCount()
-            }, this);
+            this.isTaking = ko.observable(false);
+            /**
+             * Папка приняла элемент
+             * */
+            this.isTaken = ko.observable(false);
+            /**
+             * Пустая ли папка на самом деле
+             * */
+            this.isEmptyRealy = ko.computed(function(){
+                var isEmptyRealy;
 
-            this.isSelected.subscribe(function(boolean){
-
-                function reqursive(folder){
-                    folder.files().models().forEach(function(item){
-                        item.containsInSelectedFolder(boolean);
-                    }, this);
-
-                    folder.childrens().forEach(function(item){
-                        item.containsInSelectedFolder(boolean);
-                        reqursive(item);
-                    }, this);
+                if (!this.files().isFetched()){
+                    // сначало основываемся на том что говорит сервер
+                    isEmptyRealy = this.isEmpty();
+                } else {
+                    // потом по состоянию
+                    isEmptyRealy = !this.getTotalItemsCount();
                 }
-
-                reqursive(this)
-
+                return isEmptyRealy;
             }, this);
             /**
              * @public
@@ -73,7 +73,6 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
              * */
             this.nestingLevel = ko.computed(function(){
                 var level = 1;
-
                 function reqursive(folder){
                     var parent = folder.parent();
 
@@ -82,11 +81,8 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
                         reqursive(parent);
                     }
                 }
-
                 reqursive(this);
-
                 return level;
-
             }, this);
             /**
              * @public
@@ -94,102 +90,47 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
              * @return {Boolean}
              * */
             this.isRoot = ko.observable(this.nestingLevel() === 1);
+            /**
+             * Специальный флаг
+             * если папка находится в максимальном уровне вложенности
+             * */
+            this.isMaxNestingLevel = ko.computed(function(){
+                return this.nestingLevel() > MAX_NESTING_LEVEL;
+            }, this);
+            /**
+             * Специальное поведение
+             * если папка выбрана, она не может уже быть приемником, это поведение постоянно (задача - исключить выбранные папки и все дочерние из возможных приемников)
+             * если папка максимального уровня вложенности, то она уже не может быть приемником
+             * */
+            this.mayTake = ko.computed(function(){
+                return !this.isSelected() && !this.isMaxNestingLevel();
+            }, this);
 
+            if (!this.isRoot()){
+                this.isSelected(this.parent().isSelected());
+            }
+
+
+            // todo нету!
             /**
              * @public
              * @param {Function}
              * @return {Boolean}
              * */
             this.isEditing = ko.observable(false);
-
             /**
              * @public
              * @param {Function}
              * @return {String}
              * */
             this.newTitle = ko.observable('');
-
-            if (!this.isRoot()){
-                /** that param from {DragAndDrop} */
-                this.isSelected(this.parent().isSelected());
-            }
         },
-
         /** @lends FolderViewModel.prototype */
         {
             /**
-             * Редактировать название
-             * @public
+             * По клику на пустую папку
              * */
-            onClickEditTitle: function(model, event){
-                event.stopPropagation();
-                this.isEditing(true);
-            },
-            /**
-             * Отменить редактирование имени
-             * @public
-             * */
-            onClickResetTitle : function(model, event){
-                event.stopPropagation();
-                this._resetForm();
-            },
-            /**
-             * Сохранить новое имя
-             * @public
-             * */
-            onClickSaveTitle : function(model, event){
-                event.stopPropagation();
-                this._confirmForm();
-            },
-            /**
-             * Обработчик клавиши Enter
-             * @public
-             * */
-            onEnterKeyDown: function(model, event){
-                event.stopPropagation();
-                this._confirmForm();
-            },
-            /**
-             * Обработчик клавиши Esc
-             * @public
-             * */
-            onEscKey: function(model, event){
-                event.stopPropagation();
-                this._resetForm();
-            },
-            /**
-             * @private
-             * */
-            _confirmForm: function(){
-                this._saveTitle();
-                this._resetForm();
-            },
-            /**
-             * @private
-             * */
-            _saveTitle: function(){
-                var newTitle = this.newTitle();
-
-                if(newTitle !== ''){
-                    this.title(newTitle);
-                }
-            },
-            /**
-             * @private
-             * */
-            _resetForm : function(){
-                this.newTitle('');
-                this.isEditing(false);
-            },
-            /**
-             * Opens or closes the folder
-             * @this FolderViewModel
-             * @param {object} model
-             * @param {event} event
-             * */
-            toggleIsOpenedState : function(model, event){
-                var switched = !this.isOpened();
-                switched ? this.open() : this.close();
+            onClickAtEmptyFolder: function(model, event){
                 event.stopPropagation();
             },
             /**
@@ -199,7 +140,6 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
             getTotalItemsCount: function(){
                 return this.childrens().length + this.files().models().length;
             },
-
             /**
              * Gets the number of the selected elements in the tree
              * @this FolderViewModel
@@ -307,7 +247,82 @@ define(['_', 'knockout', 'DragAndDropModel', 'FilesCollection', 'ItemCatalogView
              * */
             close : function(){
                 this.isOpened(false);
-            }
+            },
+            /**
+             * Opens or closes the folder
+             * @this FolderViewModel
+             * @param {object} model
+             * @param {event} event
+             * */
+            toggleIsOpenedState : function(model, event){
+                var switched = !this.isOpened();
+                switched ? this.open() : this.close();
+                event.stopPropagation();
+            },
+            /**
+             * Редактировать название
+             * @public
+             * */
+            onClickEditTitle: function(model, event){
+                event.stopPropagation();
+                this.isEditing(true);
+            },
+            /**
+             * Отменить редактирование имени
+             * @public
+             * */
+            onClickResetTitle : function(model, event){
+                event.stopPropagation();
+                this._resetForm();
+            },
+            /**
+             * Сохранить новое имя
+             * @public
+             * */
+            onClickSaveTitle : function(model, event){
+                event.stopPropagation();
+                this._confirmForm();
+            },
+            /**
+             * Обработчик клавиши Enter
+             * @public
+             * */
+            onEnterKeyDown: function(model, event){
+                event.stopPropagation();
+                this._confirmForm();
+            },
+            /**
+             * Обработчик клавиши Esc
+             * @public
+             * */
+            onEscKey: function(model, event){
+                event.stopPropagation();
+                this._resetForm();
+            },
+            /**
+             * @private
+             * */
+            _confirmForm: function(){
+                this._saveTitle();
+                this._resetForm();
+            },
+            /**
+             * @private
+             * */
+            _saveTitle: function(){
+                var newTitle = this.newTitle();
+
+                if(newTitle !== ''){
+                    this.title(newTitle);
+                }
+            },
+            /**
+             * @private
+             * */
+            _resetForm : function(){
+                this.newTitle('');
+                this.isEditing(false);
+            },
         }
     );
 

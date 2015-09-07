@@ -1,4 +1,4 @@
-define(['_', 'Model', 'FilesCollection'], function(_, Model, FilesCollection){
+define(['_', 'knockout', 'Model', 'FilesCollection'], function(_, ko, Model, FilesCollection){
 
     "use strict";
 
@@ -12,6 +12,7 @@ define(['_', 'Model', 'FilesCollection'], function(_, Model, FilesCollection){
         function FolderModel(attributes){
 
             this.id = ko.observable();
+            this.isEmpty = ko.observable();
             this.ownerName = ko.observable();
             this.title = ko.observable();
             this.secureLevel = ko.observable('PUBLIC');

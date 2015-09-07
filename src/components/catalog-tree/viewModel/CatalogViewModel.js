@@ -49,6 +49,10 @@ define([
         /** @lends CatalogViewModel.prototype */
         {
             /**
+             * @type {number} Перемещение в процентах (задержка)
+             * */
+            distancePercent : ko.observable(),
+            /**
              * Method for parse data and create the tree
              * @param {Object} response
              * @public
@@ -144,7 +148,6 @@ define([
                     ko.utils.arrayForEach(files.models(), function (file){
 
                         isSelected = file.isSelected();
-                        containsInFolder = file.containsInSelectedFolder();
 
                         if (isSelected && !containsInFolder){
                             selected.push(file);
@@ -181,7 +184,6 @@ define([
                     ko.utils.arrayForEach(childrens, function (children){
 
                         isSelected = children.isSelected();
-                        containsInFolder = children.containsInSelectedFolder();
 
                         if (isSelected && !containsInFolder){
                             selected.push(children);

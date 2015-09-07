@@ -46,6 +46,7 @@ require = {
 		DragAndDropModel: 					'components/catalog-tree/viewModel/mixin/DragAndDropModel',
 		FilesCollection: 					'components/catalog-tree/collection/FilesCollection',
 		ItemCatalogViewModel: 				'components/catalog-tree/viewModel/mixin/ItemCatalogViewModel',
+		EditTitleFormModel: 				'components/catalog-tree/viewModel/mixin/EditTitleFormModel',
 		CatalogModel: 						'components/catalog-tree/models/CatalogModel',
 		FileModel: 							'components/catalog-tree/models/FileModel',
 		FolderModel: 						'components/catalog-tree/models/FolderModel',

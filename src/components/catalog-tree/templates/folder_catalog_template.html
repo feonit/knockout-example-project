@@ -1,19 +1,22 @@
 <li data-bind="css: {  'drag_taken' : isTaken, 'drag_moving' : isMoving, 'drag_moved' : isMoved }">
     <div draggable="true" class="library_list" data-bind="
-    event: { dragover: ondragover, dragleave: ondragleave, dragenter: ondragenter, drop: ondrop, dragstart: ondragstart, dragend: ondragend, click: onToggleSelectStateClick },
-    css: { 'drag_taking': isTaking, 'no_drop': !mayTake(), 'selected' : isSelected(), 'drag_failed' : isFailed() }">
+    event: { dragover: ondragover, dragleave: ondragleave, dragenter: ondragenter, drop: ondrop, dragstart: ondragstart, dragend: ondragend },
+    css: { 'drag_taking': isTaking, 'no_drop': !mayTake(), 'selected' : isSelected() }">
 
         <!-- ko if: !isEditing() -->
         <div class="item_checkbox">
-            <!-- ko if: !isRoot() -->
-            <input id="file_01" type="checkbox" value="1" data-bind="attr: { id : 'file_' + $data.id(), value: id}, checked: isSelected ">
-            <!-- /ko -->
-            <!-- ko if: files() && files().isFetching() -->
-            <div class="preloader" style="margin: 0">
-                <span class="preloader_core"></span>
-            </div>
-            <!-- /ko -->
+            <label>
+                <!-- ko if: !isRoot() -->
+                <input id="file_01" type="checkbox" value="1" data-bind="attr: { id : 'file_' + $data.id(), value: id}, checked: isSelected ">
+                <!-- /ko -->
+                <!-- ko if: files() && files().isFetching() -->
+                <div class="preloader" style="margin: 0">
+                    <span class="preloader_core"></span>
+                </div>
+                <!-- /ko -->
+            </label>
         </div>
+
         <div class="item_icon">
             <div class="big_icon_point glyphicon" data-bind="click: $data.toggleIsOpenedState, css: isOpened() ? 'glyphicon-folder-open' : 'glyphicon-folder-close' "></div>
         </div>
@@ -52,8 +55,7 @@
             <li data-bind="css: { 'drag_moved' : isMoved }">
                 <div class="library_list" draggable="true" data-bind="
                     event: { dragstart: ondragstart, dragend: ondragend },
-                    css: { 'drag_moving' : isMoving, 'selected' : isSelected },
-                    click: onToggleSelectStateClick ">
+                    css: { 'drag_moving' : isMoving, 'selected' : isSelected }">
 
                     <!-- ko template: { name: 'src/components/catalog-tree/templates/file_catalog_template', data: $data }--><!-- /ko -->
 
