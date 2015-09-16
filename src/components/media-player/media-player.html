@@ -1,0 +1,25 @@
+<link rel="stylesheet" type="text/css" href="src/components/media-player/css/player.css">
+
+<div class="player-b" data-bind="css: { 'opened': isOpened }">
+
+    <div class="player-bar-b">
+        <button class="player-close-btn" data-bind="click: closeLayer">Close</button>
+    </div>
+
+    <div class="player-source-b">
+        <!-- ko if: curSrcTypeName() === 'IMAGE' -->
+        <img src="" data-bind="attr: { src: curSrcUrl }">
+        <!-- /ko -->
+
+        <!-- ko if: curSrcTypeName() === 'VIDEO' -->
+        <video controls="controls">
+            <source autoplay data-bind="attr: { src: curSrcUrl }" type="video/mp4; codecs=&quot;avc1.42E01E, mp4a.40.2&quot;">
+        </video>
+        <!-- /ko -->
+
+        <!-- ko if: curSrcTypeName() === 'DOC' -->
+        <pdf-viewer src="" data-bind="attr: { src: curSrcUrl }"></pdf-viewer>
+        <!-- /ko -->
+    </div>
+
+</div>

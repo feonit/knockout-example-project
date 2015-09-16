@@ -35,7 +35,9 @@ define(['infrastructure', 'configurationSystem', 'templatingSystem'], function()
 
                 function onDocumentReady(event) {
                     window.ROOT = {
-                        catalogViewModel : ko.observable('')
+                        catalogViewModel : ko.observable(''),
+                        playerViewModel : ko.observable(''),
+                        fileZoneViewModel : ko.observable(''),
                     };
 
                     ko.applyBindings(window.ROOT);

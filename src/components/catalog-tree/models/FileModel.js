@@ -15,6 +15,7 @@ define(['_', 'Model', 'knockout'], function(_, Model, ko){
 			this.ownerName = ko.observable();
 			this.title = ko.observable();
 			this.type = ko.observable();
+			this.src = ko.observable();
 			Model.apply(this, arguments);
 		} ,
 		/** @lends FileModel.prototype */

@@ -48,12 +48,13 @@ define(['_', 'knockout', 'FileModel', 'DragAndDropModel', 'ItemCatalogViewModel'
 
         /** @lends FileViewModel.prototype */
         {
-            getDocTypeClass : function () {
-                return 'glyphicon-camera'
-            },
-
             onClickOpenPreview: function(){
-
+                var src = this.src();
+                var type = this.type();
+                API_MediaPlayer.open({
+                    src: src,
+                    type: type
+                })
             }
         }
     );

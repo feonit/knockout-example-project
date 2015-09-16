@@ -51,7 +51,17 @@ require = {
 		FileModel: 							'components/catalog-tree/models/FileModel',
 		FolderModel: 						'components/catalog-tree/models/FolderModel',
 		enterKey: 							'components/catalog-tree/bindings/enterKey',
-		escKey: 							'components/catalog-tree/bindings/escKey'
+		escKey: 							'components/catalog-tree/bindings/escKey',
+
+
+		'media-player': 					'components/media-player/media-player',
+		'PlayerViewModel':					'components/media-player/viewModel/PlayerViewModel',
+
+		'fileload-zone': 					'components/fileload-zone/fileload-zone',
+		'FileUploadZoneViewModel':			'components/fileload-zone/viewModel/FileUploadZoneViewModel'
+
+
+
 	},
 
 	shim: {

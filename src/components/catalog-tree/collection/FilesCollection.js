@@ -1,32 +1,7 @@
 /**
  * Created by Feonit on 14.07.15.
  */
-define(['knockout'], function(ko){
-
-    var filesData = function(){
-        return {
-            data : [
-                {
-                    id : Math.round(Math.random()*100000),
-                    title: 'fileName1' + Math.round(Math.random()*10000000000),
-                    ownerName: 'OvnerName',
-                    type: "DOC"
-                },
-                {
-                    id : Math.round(Math.random()*100000),
-                    title: 'fileName2' + Math.round(Math.random()*10000000000),
-                    ownerName: 'OvnerName',
-                    type: "VIDEO"
-                },
-                {
-                    id : Math.round(Math.random()*100000),
-                    title: 'fileName2' + Math.round(Math.random()*10000000000),
-                    ownerName: 'OvnerName',
-                    type: "IMAGE"
-                }
-            ]
-        }
-    };
+define(['knockout', 'json!./../responses/folderFiles.json'], function(ko, filesData){
 
     function FileCollcetions(options){
         options = options || {};
@@ -48,7 +23,7 @@ define(['knockout'], function(ko){
             this.isFetching(true);
 
             setTimeout((function(){
-                this.parse(filesData());
+                this.parse(filesData);
                 this.isFetched(true);
                 this.isFetching(false);
 

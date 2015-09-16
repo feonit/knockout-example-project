@@ -1,0 +1,25 @@
+{
+  "data" : [
+    {
+      "id" : 1,
+      "title": "fileName1",
+      "ownerName": "OvnerName",
+      "type": "DOC",
+      "src": "files/pdf-sample.pdf"
+    },
+    {
+      "id" : 2,
+      "title": "fileName2",
+      "ownerName": "OvnerName",
+      "type": "VIDEO",
+      "src": "files/video-sample.mp4"
+    },
+    {
+      "id" : 3,
+      "title": "fileName2",
+      "ownerName": "OvnerName",
+      "type": "IMAGE",
+      "src": "files/image-sample.jpg"
+    }
+  ]
+}

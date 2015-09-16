@@ -4,11 +4,27 @@
         <input type="checkbox" value="1" data-bind="attr: { id : 'file_' + $data.id(), value: id}, checked: isSelected ">
     </label>
 </div>
+
+<!-- ko if: type() === 'DOC' -->
 <div class="item_icon">
-    <i class="glyphicon" data-bind="css: getDocTypeClass(), click: onClickOpenPreview"></i>
+    <i class="glyphicon glyphicon-book" data-bind="click: onClickOpenPreview"></i>
 </div>
+<!-- /ko -->
+
+<!-- ko if: type() === 'VIDEO' -->
+<div class="item_icon">
+    <i class="glyphicon glyphicon-facetime-video" data-bind="click: onClickOpenPreview"></i>
+</div>
+<!-- /ko -->
+
+<!-- ko if: type() === 'IMAGE' -->
+<div class="item_icon">
+    <i class="glyphicon glyphicon-picture" data-bind="click: onClickOpenPreview"></i>
+</div>
+<!-- /ko -->
+
 <div class="item_info">
-    <a class="" href="javascript: void 0" data-bind="text: title, click: onClickOpenPreview">{{title}}</a>
+    <a class="" data-bind="text: title, click: onClickOpenPreview, attr: { href: src }">{{title}}</a>
 </div>
 <div class="b-bar-controls">
     <button class="glyphicon glyphicon-pencil" data-bind="click: onClickEditTitle"></button>
