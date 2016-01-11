@@ -1,29 +1,29 @@
 {
-    "data": {
+    "rootFolder": {
         "id": 1,
         "title": "Folder 1 (Root)",
         "parent": null,
         "isEmpty": false,
-        "childrens": [
+        "folders": [
             {
                 "id": 2,
                 "title": "Folder 2",
                 "parent": 1,
                 "isEmpty": false,
-                "childrens": []
+                "folders": []
             },
             {
                 "id": 3,
                 "title": "Folder 3",
                 "parent": 1,
                 "isEmpty": false,
-                "childrens": [
+                "folders": [
                     {
                         "id": 4,
                         "parent": 3,
                         "title": "Folder 4",
                         "isEmpty": false,
-                        "childrens": []
+                        "folders": []
                     }
                 ]
             },
@@ -32,23 +32,46 @@
                 "title": "Folder 5",
                 "parent": 1,
                 "isEmpty": false,
-                "childrens": [
+                "folders": [
                     {
                         "id": 6,
                         "title": "Folder 6",
                         "parent": 5,
                         "isEmpty": false,
-                        "childrens": [
+                        "folders": [
                             {
                                 "id": 7,
                                 "title": "Folder 7",
                                 "parent": 6,
                                 "isEmpty": false,
-                                "childrens": []
+                                "folders": []
                             }
                         ]
                     }
                 ]
+            }
+        ],
+        "files" : [
+            {
+                "id" : 1,
+                "title": "fileName1",
+                "ownerName": "OvnerName",
+                "type": "DOC",
+                "src": "files/pdf-sample.pdf"
+            },
+            {
+                "id" : 2,
+                "title": "fileName2",
+                "ownerName": "OvnerName",
+                "type": "VIDEO",
+                "src": "files/video-sample.mp4"
+            },
+            {
+                "id" : 3,
+                "title": "fileName2",
+                "ownerName": "OvnerName",
+                "type": "IMAGE",
+                "src": "files/image-sample.jpg"
             }
         ]
     }

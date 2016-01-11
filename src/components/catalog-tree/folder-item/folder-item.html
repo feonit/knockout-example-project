@@ -9,7 +9,7 @@
                 <!-- ko if: !isRoot() -->
                 <input id="file_01" type="checkbox" value="1" data-bind="attr: { id : 'file_' + $data.id(), value: id}, checked: isSelected ">
                 <!-- /ko -->
-                <!-- ko if: files() && files().isFetching() -->
+                <!-- ko if: files() -->
                 <div class="preloader" style="margin: 0">
                     <span class="preloader_core"></span>
                 </div>
@@ -37,34 +37,16 @@
         <!-- /ko -->
     </div>
     <div class="contents_of_folder" data-bind="css: { 'folder_is_open': isOpened() }">
-        <!-- ko if: isEmpty() -->
-        <p class="empty_fuild">Тут пусто</p>
-        <!-- /ko -->
-
-        <!-- ko if: !isEmpty() -->
         <ul>
-            <!-- ko if: files -->
-
-            <!-- ko foreach: childrens -->
-            <!-- ko template: { name: 'src/components/catalog-tree/templates/folder_catalog_template', data: $data } -->
+            <!-- ko foreach: foldersData -->
+            <!-- ko component: { name: 'folder-item', params: $data }-->
             <!-- /ko -->
             <!-- /ko -->
 
-            <!-- ko with: files -->
-            <!-- ko foreach: models -->
-            <li data-bind="css: { 'drag_moved' : isMoved }">
-                <div class="library_list library_list-file" draggable="true" data-bind="
-                    event: { dragstart: ondragstart, dragend: ondragend },
-                    css: { 'drag_moving' : isMoving, 'selected' : isSelected }">
-
-                    <!-- ko template: { name: 'src/components/catalog-tree/templates/file_catalog_template', data: $data }--><!-- /ko -->
-
-                </div>
-            </li>
-            <!-- /ko -->
+            <!-- ko foreach: filesData || 2 -->
+            <!-- ko component: { name: 'file-item', params: $data }-->
             <!-- /ko -->
             <!-- /ko -->
         </ul>
-        <!-- /ko -->
     </div>
 </li>

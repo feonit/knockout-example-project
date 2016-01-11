@@ -12,8 +12,7 @@ define(['_', 'knockout', 'CommunicationSystem', 'knockout.mapping'], function(_,
          * @return {Model}
          * */
         function Model(attributes){
-            this.id = ko.observable();
-            this.setAttributes(attributes);
+
         },
         /** @lends Model.prototype */
         {

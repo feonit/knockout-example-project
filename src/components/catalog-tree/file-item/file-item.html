@@ -1,0 +1,49 @@
+<li data-bind="css: { 'drag_moved' : isMoved }">
+    <div class="library_list library_list-file" draggable="true" data-bind="
+                    event: { dragstart: ondragstart, dragend: ondragend },
+                    css: { 'drag_moving' : isMoving, 'selected' : isSelected }">
+
+
+        <!-- ko if: !isEditing() -->
+        <div class="item_checkbox">
+            <label>
+                <input type="checkbox" value="1" data-bind="attr: { id : 'file_' + $data.id(), value: id}, checked: isSelected ">
+            </label>
+        </div>
+
+        <!-- ko if: type() === 'DOC' -->
+        <div class="item_icon">
+            <i class="glyphicon glyphicon-book" data-bind="click: onClickOpenPreview"></i>
+        </div>
+        <!-- /ko -->
+
+        <!-- ko if: type() === 'VIDEO' -->
+        <div class="item_icon">
+            <i class="glyphicon glyphicon-facetime-video" data-bind="click: onClickOpenPreview"></i>
+        </div>
+        <!-- /ko -->
+
+        <!-- ko if: type() === 'IMAGE' -->
+        <div class="item_icon">
+            <i class="glyphicon glyphicon-picture" data-bind="click: onClickOpenPreview"></i>
+        </div>
+        <!-- /ko -->
+
+        <div class="item_info">
+            <a class="" data-bind="text: title, click: onClickOpenPreview, attr: { href: src }">{{title}}</a>
+        </div>
+        <div class="b-bar-controls">
+            <button class="glyphicon glyphicon-pencil" data-bind="click: onClickEditTitle"></button>
+        </div>
+        <!-- /ko -->
+        <!-- ko if: isEditing() -->
+        <label>
+            <input type="text" data-bind="value: newTitle, enterKey: onEnterKeyDown, escKey: onEscKey, hasFocus: isEditing() ">
+        </label>
+        <button class="glyphicon glyphicon-remove" data-bind="click: onClickResetTitle"></button>
+        <button class="glyphicon glyphicon-ok" data-bind="click: onClickSaveTitle"></button>
+        <!-- /ko -->
+
+    </div>
+</li>
+

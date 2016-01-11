@@ -2,7 +2,7 @@
  * @module Application
  * @requires infrastructure
  * */
-define(['infrastructure', 'configurationSystem', 'templatingSystem'], function(){
+define(['infrastructure', 'configurationSystem'], function(){
 
     var Application = (function(window, document, ko){
 
@@ -16,7 +16,8 @@ define(['infrastructure', 'configurationSystem', 'templatingSystem'], function()
             options = options || {};
 
             /** @arg*/
-            this.version = '1.0.0';
+            this.version = options.version || '1.0.0';
+            this.started = false;
         }
 
         Application.prototype = {
@@ -27,32 +28,63 @@ define(['infrastructure', 'configurationSystem', 'templatingSystem'], function()
             /**
              * Method for start the application
              * @public
+             * @return {Boolean}
              * */
             start : function(){
+                if (this.started) return false;
 
-                ko.amdTemplateEngine.defaultPath = 'knockout-example-project';
+                this._initialize();
 
-
-                function onDocumentReady(event) {
-                    window.ROOT = {
-                        catalogViewModel : ko.observable(''),
-                        playerViewModel : ko.observable(''),
-                        fileZoneViewModel : ko.observable(''),
-                    };
-
-                    ko.applyBindings(window.ROOT);
-                }
-
-                onDocumentReady();
-
+                this.started = true;
+                return true;
             },
 
             /**
              * Method for stop the application
              * @public
+             * @return {Boolean}
              * */
             stop : function(){
+                if (!this.started) return false;
 
+                this._destroy();
+                this.started = false;
+                return true;
+            },
+
+            /**
+             * Method for restart the application
+             * @public
+             * @return {Boolean}
+             * */
+            restart: function(){
+                if (!this.started) return false;
+
+                this.stop();
+                return this.start();
+            },
+
+            /**
+             * Init
+             * @private
+             * @return {Boolean}
+             * */
+            _initialize: function(){
+                window.ROOT = {
+                    catalogViewModel : ko.observable(''),
+                    playerViewModel : ko.observable(''),
+                    fileZoneViewModel : ko.observable('')
+                };
+
+                ko.applyBindings(window.ROOT);
+            },
+            /**
+             * Destroy
+             * @private
+             * @return {Boolean}
+             * */
+            _destroy: function(){
+                ko.cleanNode(document.body);
             }
         };
 

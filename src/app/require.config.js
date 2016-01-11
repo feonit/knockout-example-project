@@ -1,7 +1,3 @@
-/**
- * @author Orlov Leonid, feonitu@yandex.ru
- * */
-
 require = {
 
 	waitSeconds: 1000,
@@ -29,27 +25,19 @@ require = {
 		/**
 		 * core
 		 * */
-		_: 									'core/util',
-		Model: 								'core/Model',
-		View: 								'core/View',
+		_: 									'app/util',
+		Model: 								'app/Model',
+		View: 								'app/View',
 		CommunicationSystem: 				'systems/communication/CommunicationSystem',
 		configurationSystem: 				'systems/configuration/configuration',
-		templatingSystem:					'systems/templating/templatingSystem',
 
 		/**
 		 * ui components (package for catalog-tree component)
 		 * */
 		'catalog-tree': 					'components/catalog-tree/catalog-tree',
-		CatalogViewModel: 					'components/catalog-tree/viewModel/CatalogViewModel',
-		FolderViewModel: 					'components/catalog-tree/viewModel/FolderViewModel',
-		FileViewModel: 						'components/catalog-tree/viewModel/FileViewModel',
-		DragAndDropModel: 					'components/catalog-tree/viewModel/mixin/DragAndDropModel',
-		FilesCollection: 					'components/catalog-tree/collection/FilesCollection',
-		ItemCatalogViewModel: 				'components/catalog-tree/viewModel/mixin/ItemCatalogViewModel',
-		EditTitleFormModel: 				'components/catalog-tree/viewModel/mixin/EditTitleFormModel',
-		CatalogModel: 						'components/catalog-tree/models/CatalogModel',
-		FileModel: 							'components/catalog-tree/models/FileModel',
-		FolderModel: 						'components/catalog-tree/models/FolderModel',
+		CatalogViewModel: 					'components/catalog-tree/CatalogViewModel',
+		FolderRootViewModel: 				'components/catalog-tree/FolderRootViewModel',
+		ItemModel: 							'components/catalog-tree/ItemModel',
 		enterKey: 							'components/catalog-tree/bindings/enterKey',
 		escKey: 							'components/catalog-tree/bindings/escKey',
 
@@ -59,9 +47,6 @@ require = {
 
 		'fileload-zone': 					'components/fileload-zone/fileload-zone',
 		'FileUploadZoneViewModel':			'components/fileload-zone/viewModel/FileUploadZoneViewModel'
-
-
-
 	},
 
 	shim: {
